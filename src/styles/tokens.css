@@ -48,22 +48,32 @@
   --focus-ring: var(--wine-700);
   --error: var(--wine-700);
 
+  /* Form fields: transparent on light surfaces, solid ivory on dark ones. */
+  --field-surface: transparent;
+  --field-text: var(--stone-900);
+  --field-border: color-mix(in oklab, var(--wine-700), transparent 60%);
+  --field-invalid: var(--wine-700);
+  --field-focus: var(--wine-700);
+
   /* ---- Typography ---- */
   --font-display: var(--font-eb-garamond), "EB Garamond", Georgia, serif;
   --font-body: var(--font-instrument-sans), "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
 
-  /* Fluid type scale: min at 360px viewport, max at 1440px */
+  /* Fluid type scale: min at 360px viewport, max at 1440px.
+     The top end is deliberately compressed (2026-11-17): steps shrink as sizes grow,
+     so headlines stay refined rather than loud. Desktop max: 30 / 36 / 46 / 58px. */
   --text-xs: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
   --text-sm: clamp(0.9rem, 0.87rem + 0.12vw, 0.98rem);
   --text-md: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
   --text-lg: clamp(1.15rem, 1.07rem + 0.37vw, 1.4rem);
-  --text-xl: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
-  --text-2xl: clamp(2rem, 1.6rem + 1.8vw, 2.5rem);
-  --text-3xl: clamp(2.5rem, 1.9rem + 2.7vw, 3.75rem);
-  --text-4xl: clamp(2.9rem, 2rem + 4.2vw, 5.25rem);
+  --text-xl: clamp(1.5rem, 1.375rem + 0.56vw, 1.875rem);
+  --text-2xl: clamp(1.875rem, 1.75rem + 0.56vw, 2.25rem);
+  --text-3xl: clamp(2.25rem, 2.04rem + 0.93vw, 2.875rem);
+  --text-4xl: clamp(2.6rem, 2.26rem + 1.52vw, 3.625rem);
 
-  --leading-tight: 1.05;
-  --leading-snug: 1.2;
+  --leading-tight: 0.98;   /* h1, h2 */
+  --leading-snug: 1.08;   /* h3, h4, smaller headings */
+  --leading-quote: 1.3;   /* multi-line scripture and quotes */
   --leading-body: 1.6;
   --tracking-display: -0.01em;
   --tracking-caps: 0.14em;
@@ -85,21 +95,27 @@
   /* ---- Layout ---- */
   --container-max: 75rem;
   --container-narrow: 46rem;
-  --gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+  --gutter: clamp(1rem, -0.2rem + 3vw, 2.5rem); /* 16px up to a 640px viewport, 40px at 1440 */
   --header-height: 4.5rem;
 
   /* ---- Shape & depth ---- */
   --radius-sm: 4px;
   --radius-md: 8px;
+  --radius-lg: 12px; /* panels that hold other rounded elements, e.g. form panels */
   --radius-pill: 999px;
   --border-width: 1px;
   --shadow-card: 0 18px 40px -24px color-mix(in oklab, var(--brand-stone), transparent 60%);
+  --shadow-panel:
+    0 1px 2px color-mix(in oklab, var(--brand-stone), transparent 94%),
+    0 8px 16px -8px color-mix(in oklab, var(--brand-stone), transparent 92%),
+    0 24px 48px -24px color-mix(in oklab, var(--brand-stone), transparent 88%);
 
   /* ---- Motion (reduced to near-zero by prefers-reduced-motion in base.css) ---- */
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 600ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --hover-scale: 1.03; /* buttons grow slightly on hover (off with reduced motion) */
 
   /* ---- Layers ---- */
   --z-header: 50;
@@ -124,6 +140,12 @@
   --border: color-mix(in oklab, var(--wine-700), transparent 82%);
   --border-strong: color-mix(in oklab, var(--wine-700), transparent 60%);
   --focus-ring: var(--wine-700);
+  --field-surface: transparent;
+  --field-text: var(--stone-900);
+  --field-border: color-mix(in oklab, var(--wine-700), transparent 60%);
+  --field-invalid: var(--wine-700);
+  --field-focus: var(--wine-700);
+  --error: var(--wine-700);
 }
 
 [data-surface="ivory-deep"] {
@@ -137,6 +159,12 @@
   --border: color-mix(in oklab, var(--wine-700), transparent 80%);
   --border-strong: color-mix(in oklab, var(--wine-700), transparent 58%);
   --focus-ring: var(--wine-700);
+  --field-surface: transparent;
+  --field-text: var(--stone-900);
+  --field-border: color-mix(in oklab, var(--wine-700), transparent 60%);
+  --field-invalid: var(--wine-700);
+  --field-focus: var(--wine-700);
+  --error: var(--wine-700);
 }
 
 [data-surface="wine"] {
@@ -150,6 +178,12 @@
   --border: color-mix(in oklab, var(--ivory-100), transparent 80%);
   --border-strong: color-mix(in oklab, var(--ivory-100), transparent 55%);
   --focus-ring: var(--ivory-100);
+  --field-surface: color-mix(in oklab, var(--ivory-100), transparent 92%);
+  --field-text: var(--ivory-100);
+  --field-border: color-mix(in oklab, var(--ivory-100), transparent 95%);
+  --field-invalid: color-mix(in oklab, var(--ivory-100), transparent 70%);
+  --field-focus: var(--ivory-100);
+  --error: var(--ivory-muted);
 }
 
 [data-surface="stone"] {
@@ -163,6 +197,12 @@
   --border: color-mix(in oklab, var(--ivory-100), transparent 84%);
   --border-strong: color-mix(in oklab, var(--ivory-100), transparent 60%);
   --focus-ring: var(--ivory-100);
+  --field-surface: color-mix(in oklab, var(--ivory-100), transparent 92%);
+  --field-text: var(--ivory-100);
+  --field-border: color-mix(in oklab, var(--ivory-100), transparent 95%);
+  --field-invalid: color-mix(in oklab, var(--ivory-100), transparent 70%);
+  --field-focus: var(--ivory-100);
+  --error: var(--ivory-muted-dark);
 }
 
 [data-surface] {

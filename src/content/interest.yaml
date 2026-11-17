@@ -1,0 +1,72 @@
+# Interest landing page (/interest). No header or footer: just the message and the form.
+# Edit the text and fields; keep the structure. Each submission becomes a row in the
+# Google Sheet tab named after `form.name` (see integrations/google-sheets/README.md).
+interest:
+  seo:
+    title: Join the Collective | The Upper Room Collective
+    description: Connect with a community of faith-driven founders, funders and builders, and stay up to date on what’s next.
+
+  heading: For Those Called to Build the Extraordinary.
+  lede: Connect with a community of faith-driven founders, funders and builders. Tell us a little about yourself and we’ll keep you up to date on what’s next.
+
+  form:
+    name: Interest
+    submitLabel: Submit
+    success:
+      heading: Thank you.
+      body: You’re connected. Watch your inbox for updates on what’s next.
+    fields:
+      - name: name
+        label: Name
+        type: text
+        autocomplete: name
+        required: true
+        half: true
+      - name: business
+        label: Business
+        type: text
+        autocomplete: organization
+        required: true
+        half: true
+      - name: email
+        label: Email address
+        type: email
+        autocomplete: email
+        required: true
+        half: true
+      - name: phone
+        label: Phone
+        type: tel
+        autocomplete: tel
+        required: true
+        half: true
+      - name: website
+        label: Website
+        type: url
+        autocomplete: url
+        required: false
+        half: true
+      - name: linkedin
+        label: LinkedIn
+        type: url
+        autocomplete: "off"
+        required: true
+        half: true
+      - name: interests
+        label: I would like…
+        type: checkboxes
+        required: true
+        options:
+          - To stay updated on all events
+          - To join the Run Club
+          - To be invited to the next Founder Masterclass
+          - To sign up for the Founder Design Studio
+          - Consulting services
+      - name: building
+        label: What are you building?
+        type: textarea
+        required: false
+      - name: consent
+        label: I agree to receive emails and updates from The Upper Room Collective. I can unsubscribe at any time. Read our [Privacy Policy](/privacy).
+        type: consent
+        required: true

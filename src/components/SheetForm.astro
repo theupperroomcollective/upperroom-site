@@ -1,0 +1,540 @@
+---
+/**
+ * SheetForm — a form whose submissions become rows in a Google Sheet.
+ * Fields come from a content file (see the `formField` schema in content.config.ts);
+ * each field's `name` becomes a column header in the sheet.
+ *
+ * Field types: text, email, tel, url, textarea, select, checkboxes (pick any; the
+ * sheet gets them comma-separated) and consent (a single required tick box whose
+ * label may contain one [link text](/url); the exact wording is saved with the row).
+ *
+ * Submissions go to the Google Apps Script web app set in PUBLIC_SHEETS_ENDPOINT
+ * (setup: integrations/google-sheets/README.md). `formName` picks the sheet tab.
+ * Without an endpoint the form still validates but says it isn't connected yet.
+ * The hidden "company" field is a spam honeypot: real people never fill it.
+ *
+ * surface: set "wine" or "stone" to put the form in its own colored panel
+ * with translucent fields, a hairline border and a soft shadow.
+ */
+interface Field {
+  name: string;
+  label: string;
+  type: "text" | "email" | "tel" | "url" | "textarea" | "select" | "checkboxes" | "consent";
+  required: boolean;
+  autocomplete?: string;
+  options?: string[];
+  half?: boolean;
+}
+
+interface Props {
+  id: string;
+  formName: string;
+  fields: Field[];
+  submitLabel: string;
+  success: { heading: string; body: string };
+  surface?: "wine" | "stone";
+}
+
+const { id, formName, fields, submitLabel, success, surface } = Astro.props;
+const endpoint = import.meta.env.PUBLIC_SHEETS_ENDPOINT ?? "";
+const fieldId = (name: string) => `${id}-${name}`;
+const errorId = (name: string) => `${id}-${name}-error`;
+
+// Split "Read our [Privacy Policy](/privacy)." into text and link parts.
+const linkParts = (text: string) =>
+  text.split(/(\[[^\]]+\]\([^)]+\))/).map((part) => {
+    const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    return match ? { text: match[1], href: match[2] } : { text: part };
+  });
+const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
+---
+
+<div class:list={["sheet-form", { "sheet-form--panel": surface }]} data-surface={surface} data-sheet-form>
+  <form class="sheet-form__form" action={endpoint || undefined} method="post" data-endpoint={endpoint} novalidate>
+    <input type="hidden" name="form" value={formName} />
+    <div class="sheet-form__honeypot" aria-hidden="true">
+      <label for={fieldId("company")}>Leave this field empty</label>
+      <input id={fieldId("company")} name="company" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="sheet-form__grid">
+      {
+        fields.map((field) =>
+          field.type === "checkboxes" ? (
+            <fieldset
+              class:list={["sheet-form__field", "sheet-form__group", { "sheet-form__field--half": field.half }]}
+              data-field="checkboxes"
+              data-required={field.required ? "" : undefined}
+              data-error={errorId(field.name)}
+              aria-describedby={errorId(field.name)}
+            >
+              <legend>
+                {field.label}
+                {!field.required && <span class="sheet-form__optional"> (optional)</span>}
+              </legend>
+              <div class="sheet-form__options">
+                {field.options?.map((option) => (
+                  <label class="sheet-form__check">
+                    <input type="checkbox" name={field.name} value={option} />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+              <p class="sheet-form__error" id={errorId(field.name)} />
+            </fieldset>
+          ) : field.type === "consent" ? (
+            <div class="sheet-form__field sheet-form__consent" data-field="consent" data-error={errorId(field.name)}>
+              <input type="hidden" name={`${field.name}_text`} value={plainText(field.label)} />
+              <label class="sheet-form__check">
+                <input
+                  type="checkbox"
+                  name={field.name}
+                  value="Yes"
+                  required={field.required}
+                  aria-describedby={errorId(field.name)}
+                />
+                <span>
+                  {linkParts(field.label).map((part) =>
+                    part.href ? (
+                      <a href={part.href} target="_blank" rel="noopener">
+                        {part.text}
+                        <span class="visually-hidden"> (opens in a new tab)</span>
+                      </a>
+                    ) : (
+                      part.text
+                    ),
+                  )}
+                </span>
+              </label>
+              <p class="sheet-form__error" id={errorId(field.name)} />
+            </div>
+          ) : (
+            <div
+              class:list={["sheet-form__field", { "sheet-form__field--half": field.half }]}
+              data-field={field.type}
+              data-error={errorId(field.name)}
+            >
+              <label for={fieldId(field.name)}>
+                {field.label}
+                {!field.required && <span class="sheet-form__optional"> (optional)</span>}
+              </label>
+              {field.type === "textarea" ? (
+                <textarea
+                  id={fieldId(field.name)}
+                  name={field.name}
+                  rows="4"
+                  required={field.required}
+                  autocomplete={field.autocomplete}
+                  aria-describedby={errorId(field.name)}
+                />
+              ) : field.type === "select" ? (
+                <div class="sheet-form__select">
+                  <select
+                    id={fieldId(field.name)}
+                    name={field.name}
+                    required={field.required}
+                    aria-describedby={errorId(field.name)}
+                  >
+                    <option value="">Choose one</option>
+                    {field.options?.map((option) => (
+                      <option value={option}>{option}</option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <input
+                  id={fieldId(field.name)}
+                  name={field.name}
+                  type={field.type === "url" ? "text" : field.type}
+                  inputmode={field.type === "url" ? "url" : undefined}
+                  spellcheck={field.type === "url" || field.type === "email" ? "false" : undefined}
+                  required={field.required}
+                  autocomplete={field.autocomplete}
+                  aria-describedby={errorId(field.name)}
+                />
+              )}
+              <p class="sheet-form__error" id={errorId(field.name)} />
+            </div>
+          ),
+        )
+      }
+    </div>
+
+    <button class="sheet-form__submit" type="submit">{submitLabel}</button>
+    <p class="sheet-form__status" role="status" aria-live="polite"></p>
+  </form>
+
+  <div class="sheet-form__success" tabindex="-1" hidden>
+    <h2 class="sheet-form__success-heading">{success.heading}</h2>
+    <p>{success.body}</p>
+  </div>
+</div>
+
+<script>
+  type Control = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+
+  // Web addresses are checked loosely ("example.com" is fine, no https:// needed).
+  const looksLikeUrl = (value: string) => /^\S+\.\S+$/.test(value);
+  const looksLikePhone = (value: string) => /^[0-9+().\-\s]{7,}$/.test(value);
+
+  /** Returns an error message for one field container, or "" if it's fine. */
+  const validate = (container: HTMLElement): string => {
+    const kind = container.dataset.field;
+    if (kind === "checkboxes") {
+      const anyChecked = container.querySelector("input:checked");
+      return container.hasAttribute("data-required") && !anyChecked ? "Please choose at least one." : "";
+    }
+    const el = container.querySelector<Control>("input:not([type='hidden']), textarea, select");
+    if (!el) return "";
+    const value = el.value.trim();
+    if (el.validity.valueMissing || (el.required && !value && !(el instanceof HTMLInputElement && el.type === "checkbox"))) {
+      if (kind === "consent") return "Please tick this box to continue.";
+      if (kind === "select") return "Please choose an option.";
+      return "This field is required.";
+    }
+    if (!value) return "";
+    if (kind === "email" && el.validity.typeMismatch) return "Please enter a valid email address.";
+    if (kind === "url" && !looksLikeUrl(value)) return "Please enter a web address, e.g. example.com.";
+    if (kind === "tel" && !looksLikePhone(value)) return "Please enter a valid phone number.";
+    return "";
+  };
+
+  const controlsOf = (container: HTMLElement) =>
+    Array.from(container.querySelectorAll<Control>("input:not([type='hidden']), textarea, select"));
+
+  const showError = (container: HTMLElement, message: string) => {
+    controlsOf(container).forEach((el) =>
+      message ? el.setAttribute("aria-invalid", "true") : el.removeAttribute("aria-invalid"),
+    );
+    const error = container.querySelector<HTMLElement>(`#${CSS.escape(container.dataset.error ?? "")}`);
+    if (error) error.textContent = message;
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-sheet-form]").forEach((root) => {
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const status = form.querySelector<HTMLElement>("[role='status']")!;
+    const submit = form.querySelector<HTMLButtonElement>("button[type='submit']")!;
+    const success = root.querySelector<HTMLElement>(".sheet-form__success")!;
+    const containers = Array.from(form.querySelectorAll<HTMLElement>("[data-field]"));
+
+    // Once a field shows an error, re-check it as the person fixes it.
+    containers.forEach((container) => {
+      const recheck = () => {
+        if (container.querySelector("[aria-invalid]")) showError(container, validate(container));
+      };
+      container.addEventListener("input", recheck);
+      container.addEventListener("change", recheck);
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      status.textContent = "";
+
+      const invalid = containers.filter((container) => {
+        const message = validate(container);
+        showError(container, message);
+        return Boolean(message);
+      });
+      if (invalid.length) {
+        controlsOf(invalid[0])[0]?.focus();
+        return;
+      }
+
+      const endpoint = form.dataset.endpoint;
+      if (!endpoint) {
+        status.textContent = "This form isn’t connected yet. Please try again soon.";
+        return;
+      }
+
+      const data = new URLSearchParams();
+      new FormData(form).forEach((value, key) => data.append(key, String(value).trim()));
+      data.append("page", window.location.pathname);
+
+      submit.disabled = true;
+      status.textContent = "Sending…";
+      try {
+        // A plain form-encoded POST is a "simple" request, so the browser
+        // doesn't need a CORS preflight that Apps Script can't answer.
+        const response = await fetch(endpoint, { method: "POST", body: data });
+        const result = await response.json();
+        if (!result.ok) throw new Error(result.error ?? "Submission failed");
+        form.hidden = true;
+        success.hidden = false;
+        success.focus();
+      } catch {
+        status.textContent = "Something went wrong and your details weren’t sent. Please try again.";
+        submit.disabled = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .sheet-form--panel {
+    padding: var(--space-md);
+    border: var(--border-width) solid color-mix(in oklab, var(--text-heading), transparent 95%);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-panel);
+    color-scheme: dark; /* dark native select menus and controls on the colored panel */
+    text-align: start;
+  }
+
+  @media (width >= 36em) {
+    .sheet-form--panel {
+      padding: var(--space-lg);
+    }
+  }
+
+  .sheet-form--panel .sheet-form__success {
+    padding: 0;
+    border: 0;
+  }
+
+  .sheet-form__honeypot {
+    position: absolute;
+    left: -100vw;
+  }
+
+  .sheet-form__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md) var(--space-sm);
+  }
+
+  .sheet-form__field {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: var(--space-2xs);
+    align-content: start;
+  }
+
+  @media (width >= 36em) {
+    .sheet-form__field--half {
+      grid-column: span 1;
+    }
+  }
+
+  .sheet-form label,
+  .sheet-form legend {
+    color: var(--text-heading);
+    font-size: var(--text-sm);
+  }
+
+  .sheet-form__optional {
+    color: var(--text-body);
+  }
+
+  .sheet-form input:not([type="checkbox"]),
+  .sheet-form textarea,
+  .sheet-form select {
+    width: 100%;
+    min-height: 2.875rem;
+    padding: var(--space-2xs) var(--space-sm);
+    border: var(--border-width) solid var(--field-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--field-surface);
+    color: var(--field-text);
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      outline-color var(--duration-fast) var(--ease-out);
+  }
+
+  /* Focus: the field's own border lights up (plus a hairline outline, so it reads as 2px without shifting). */
+  .sheet-form input:not([type="checkbox"]):focus-visible,
+  .sheet-form textarea:focus-visible,
+  .sheet-form select:focus-visible {
+    border-color: var(--field-focus);
+    outline: var(--border-width) solid var(--field-focus);
+    outline-offset: 0;
+  }
+
+  .sheet-form option {
+    background-color: var(--surface);
+    color: var(--text-heading);
+  }
+
+  .sheet-form textarea {
+    resize: vertical;
+  }
+
+  /* Custom chevron so it sits inset from the edge, matching the text padding. */
+  .sheet-form__select {
+    position: relative;
+  }
+
+  .sheet-form__select select {
+    padding-right: var(--space-2xl);
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .sheet-form__select::after {
+    position: absolute;
+    top: 50%;
+    right: var(--space-sm);
+    width: var(--space-2xs);
+    height: var(--space-2xs);
+    border-right: 1.5px solid var(--field-text);
+    border-bottom: 1.5px solid var(--field-text);
+    content: "";
+    pointer-events: none;
+    transform: translateY(-70%) rotate(45deg);
+  }
+
+  .sheet-form [aria-invalid="true"]:not(:focus-visible) {
+    border-color: var(--field-invalid);
+  }
+
+  /* Checkbox groups and the consent box */
+  .sheet-form__group {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .sheet-form__group legend {
+    margin-bottom: var(--space-2xs);
+    padding: 0;
+  }
+
+  .sheet-form__options {
+    display: grid;
+    padding-left: var(--space-md);
+  }
+
+  .sheet-form label.sheet-form__check {
+    display: flex;
+    gap: var(--space-xs);
+    align-items: flex-start;
+    min-height: 2.75rem;
+    padding-block: var(--space-2xs);
+    color: var(--text-heading);
+    cursor: pointer;
+  }
+
+  /* Outline when unchecked, filled with a check mark when checked. */
+  .sheet-form__check input {
+    display: grid;
+    flex-shrink: 0;
+    place-content: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0;
+    margin-top: 0.1em;
+    border: var(--border-width) solid color-mix(in oklab, var(--text-heading), transparent 45%);
+    border-radius: var(--radius-sm);
+    background-color: transparent;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+    appearance: none;
+  }
+
+  .sheet-form__check input::after {
+    width: 0.3rem;
+    height: 0.6rem;
+    border-right: 2px solid var(--on-accent);
+    border-bottom: 2px solid var(--on-accent);
+    content: "";
+    opacity: 0;
+    transform: translateY(-0.06rem) rotate(45deg);
+  }
+
+  .sheet-form__check input:hover {
+    border-color: var(--text-heading);
+  }
+
+  .sheet-form__check input:checked {
+    border-color: var(--accent);
+    background-color: var(--accent);
+  }
+
+  .sheet-form__check input:checked::after {
+    opacity: 1;
+  }
+
+  /* Tighter rows inside a list of options (each row is still a 24px+ target). */
+  .sheet-form__options label.sheet-form__check {
+    min-height: 0;
+    padding-block: var(--space-3xs);
+  }
+
+  .sheet-form__consent {
+    padding-top: var(--space-md);
+    border-top: var(--border-width) solid var(--border);
+  }
+
+  .sheet-form__consent .sheet-form__check {
+    color: var(--text-body);
+  }
+
+  .sheet-form__check a {
+    color: var(--text-heading);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .sheet-form__error:empty {
+    display: none;
+  }
+
+  .sheet-form__error {
+    color: var(--error);
+    font-size: var(--text-xs);
+  }
+
+  .sheet-form__submit {
+    display: block;
+    min-height: 2.875rem;
+    margin-left: auto;
+    margin-top: var(--space-lg);
+    padding: var(--space-2xs) var(--space-lg);
+    border: var(--border-width) solid var(--accent);
+    border-radius: var(--radius-sm);
+    background-color: var(--accent);
+    color: var(--on-accent);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      transform var(--duration-base) var(--ease-out);
+  }
+
+  .sheet-form__submit:hover {
+    background-color: var(--accent-hover);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sheet-form__submit:hover:not(:disabled) {
+      transform: scale(var(--hover-scale));
+    }
+  }
+
+  .sheet-form__submit:disabled {
+    cursor: progress;
+    opacity: 0.6;
+  }
+
+  .sheet-form__status:not(:empty) {
+    margin-top: var(--space-sm);
+    font-size: var(--text-sm);
+  }
+
+  .sheet-form__success {
+    display: grid;
+    gap: var(--space-xs);
+    padding: var(--space-lg);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+  }
+
+  .sheet-form__success[hidden] {
+    display: none;
+  }
+
+  .sheet-form__success-heading {
+    font-size: var(--text-2xl);
+  }
+</style>

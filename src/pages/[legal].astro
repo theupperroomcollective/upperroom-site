@@ -1,0 +1,58 @@
+---
+/**
+ * Legal pages (/privacy, /terms, …). One page per Markdown file in
+ * src/content/legal/. Edit the text there; this file is only the layout.
+ */
+import { getCollection, render } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import Prose from "../components/Prose.astro";
+
+export const getStaticPaths = (async () => {
+  const pages = await getCollection("legal");
+  return pages.map((page) => ({ params: { legal: page.id }, props: { page } }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+const updated = page.data.updated.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "UTC",
+});
+---
+
+<BaseLayout title={`${page.data.title} | The Upper Room Collective`} description={page.data.description}>
+  <Section width="narrow" labelledby="legal-heading">
+    <div class="flow">
+      <Eyebrow>Legal</Eyebrow>
+      <h1 id="legal-heading">{page.data.title}</h1>
+      <p class="legal__meta">Last updated <time datetime={page.data.updated.toISOString().slice(0, 10)}>{updated}</time></p>
+      {
+        page.data.draft && (
+          <p class="legal__draft" role="note">
+            Draft: this page is pending legal review and may change before launch.
+          </p>
+        )
+      }
+      <Prose><Content /></Prose>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .legal__meta {
+    font-size: var(--text-sm);
+  }
+
+  .legal__draft {
+    padding: var(--space-xs) var(--space-sm);
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text-strong);
+    font-size: var(--text-sm);
+  }
+</style>

@@ -15,10 +15,12 @@ interface Props {
   description: string;
   image?: string;
   noindex?: boolean;
+  /** Leave out the site header and footer (standalone landing pages). */
+  bare?: boolean;
 }
 
 const site = (await getEntry("site", "main"))!.data;
-const { title, description, image = "/brand/logo-wine.png", noindex = false } = Astro.props;
+const { title, description, image = "/brand/logo-wine.png", noindex = false, bare = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 const fathomSiteId = import.meta.env.PUBLIC_FATHOM_SITE_ID;
@@ -55,10 +57,10 @@ const fathomSiteId = import.meta.env.PUBLIC_FATHOM_SITE_ID;
   </head>
   <body data-surface="ivory">
     <a class="skip-link" href="#main">Skip to content</a>
-    <SiteHeader />
+    {!bare && <SiteHeader />}
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <SiteFooter />
+    {!bare && <SiteFooter />}
   </body>
 </html>

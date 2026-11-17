@@ -13,6 +13,8 @@ import Media from "../components/Media.astro";
 import Scripture from "../components/Scripture.astro";
 import PillarCard from "../components/PillarCard.astro";
 import NewsletterForm from "../components/NewsletterForm.astro";
+import SheetForm from "../components/SheetForm.astro";
+import Prose from "../components/Prose.astro";
 
 const pillar = (await getCollection("pillars")).map((p) => p.data).find((p) => p.status)!;
 
@@ -169,9 +171,36 @@ const space = ["--space-3xs", "--space-2xs", "--space-xs", "--space-sm", "--spac
         <PillarCard pillar={pillar} headingLevel="h3" />
       </div>
 
+      <h3>Prose (Markdown text)</h3>
+      <Prose>
+        <p>Long-form text such as the legal pages. Written in Markdown, styled automatically.</p>
+        <h2>A section heading</h2>
+        <ul>
+          <li>A list item</li>
+          <li>Another item with <a href="#">a link</a></li>
+        </ul>
+      </Prose>
+
       <h3>Newsletter form</h3>
       <div class="form-demo">
         <NewsletterForm id="styleguide-newsletter" />
+      </div>
+
+      <h3>Sheet form (Google Sheets)</h3>
+      <div class="form-demo">
+        <SheetForm
+          id="styleguide-sheet"
+          formName="Style guide test"
+          submitLabel="Submit"
+          success={{ heading: "Thank you.", body: "Success message shown after sending." }}
+          fields={[
+            { name: "first_name", label: "First name", type: "text", required: true, half: true },
+            { name: "last_name", label: "Last name", type: "text", required: true, half: true },
+            { name: "email", label: "Email address", type: "email", required: true, half: false },
+            { name: "role", label: "I am a…", type: "select", required: true, half: false, options: ["Founder", "Funder"] },
+            { name: "note", label: "Message", type: "textarea", required: false, half: false },
+          ]}
+        />
       </div>
     </div>
   </Section>

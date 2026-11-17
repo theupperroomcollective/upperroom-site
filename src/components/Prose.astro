@@ -1,0 +1,45 @@
+---
+/**
+ * Prose — typography for long-form text written in Markdown (legal pages,
+ * and any future article-style content). Styles plain HTML elements inside it.
+ */
+---
+
+<div class="prose"><slot /></div>
+
+<style>
+  .prose {
+    max-width: 42rem;
+  }
+
+  .prose :global(* + *) {
+    margin-top: var(--space-sm);
+  }
+
+  .prose :global(h2) {
+    margin-top: var(--space-xl);
+    font-size: var(--text-xl);
+  }
+
+  .prose :global(h3) {
+    margin-top: var(--space-lg);
+    font-size: var(--text-lg);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: var(--space-md);
+  }
+
+  .prose :global(li + li) {
+    margin-top: var(--space-2xs);
+  }
+
+  .prose :global(a) {
+    color: var(--accent);
+  }
+
+  .prose :global(strong) {
+    color: var(--text-strong);
+  }
+</style>

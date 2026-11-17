@@ -12,7 +12,7 @@ home:
       label: Join the Collective
       href: /join
     secondary:
-      label: Explore the Ecosystem
+      label: Experiences
       href: "#ecosystem-heading"
     image:
       src: /images/placeholders/landscape.svg
@@ -68,7 +68,7 @@ home:
       - Exceptional Visionaries.
       - World-Changing Ventures.
     primary:
-      label: Explore the Ecosystem
+      label: Experiences
       href: "#ecosystem-heading"
     secondary:
       label: Join the Collective

@@ -6,15 +6,18 @@ main:
   description: A faith-driven accelerator ecosystem for the world’s next unicorn founders.
   email: tanya@the5collective.org
 
+  # A nav item is either a link (label + href) or a dropdown (label + children).
   nav:
     - label: About
       href: /about
-    - label: Run Club
-      href: /run-club
-    - label: Masterclasses
-      href: /masterclasses
-    - label: Design Studio
-      href: /studio
+    - label: Experiences
+      children:
+        - label: Founder Run Club
+          href: /run-club
+        - label: Founder Masterclasses
+          href: /masterclasses
+        - label: Founder Design Studio
+          href: /studio
     - label: Contact
       href: /contact
 
@@ -23,7 +26,7 @@ main:
     href: /join
 
   footerGroups:
-    - heading: The Ecosystem
+    - heading: Experiences
       links:
         - label: Founder Run Club
           href: /run-club
@@ -39,6 +42,12 @@ main:
           href: /join
         - label: Contact
           href: /contact
+
+  legalLinks:
+    - label: Privacy Policy
+      href: /privacy
+    - label: Terms of Use
+      href: /terms
 
   footerScripture:
     text: Let Your Light So Shine.

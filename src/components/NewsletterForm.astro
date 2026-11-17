@@ -96,10 +96,19 @@ const { id, label = "Email address", submitLabel = "Subscribe" } = Astro.props;
     color: var(--on-accent);
     font-weight: var(--weight-medium);
     cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      transform var(--duration-base) var(--ease-out);
   }
 
   .newsletter__submit:hover {
     background-color: var(--accent-hover);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .newsletter__submit:hover:not(:disabled) {
+      transform: scale(var(--hover-scale));
+    }
   }
 
   .newsletter__status:not(:empty) {
