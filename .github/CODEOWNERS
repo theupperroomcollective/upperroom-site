@@ -1,0 +1,3 @@
+# Every change needs review from Cedar before it can merge into main
+# (takes effect once branch protection "Require review from Code Owners" is on).
+* @cedar-admin

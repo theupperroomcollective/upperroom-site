@@ -1,0 +1,109 @@
+---
+/**
+ * NewsletterForm — email sign-up.
+ * Submissions are NOT wired yet (spreadsheet hookup comes later). Until then the
+ * form posts nowhere and shows a notice instead of failing silently.
+ * The hidden "company" field is a spam honeypot: real people never fill it.
+ */
+interface Props {
+  id: string;
+  label?: string;
+  submitLabel?: string;
+}
+const { id, label = "Email address", submitLabel = "Subscribe" } = Astro.props;
+---
+
+<form class="newsletter" data-form="newsletter" novalidate>
+  <div class="newsletter__honeypot" aria-hidden="true">
+    <label for={`${id}-company`}>Leave this field empty</label>
+    <input id={`${id}-company`} name="company" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+  <label class="newsletter__label" for={`${id}-email`}>{label}</label>
+  <div class="newsletter__row">
+    <input
+      id={`${id}-email`}
+      class="newsletter__input"
+      name="email"
+      type="email"
+      autocomplete="email"
+      required
+      aria-describedby={`${id}-status`}
+    />
+    <button class="newsletter__submit" type="submit">{submitLabel}</button>
+  </div>
+  <p class="newsletter__status" id={`${id}-status`} role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>("[data-form='newsletter']").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const status = form.querySelector<HTMLElement>("[role='status']");
+      const email = form.querySelector<HTMLInputElement>("input[type='email']");
+      if (!status || !email) return;
+      if (!email.checkValidity()) {
+        email.setAttribute("aria-invalid", "true");
+        status.textContent = "Please enter a valid email address.";
+        email.focus();
+        return;
+      }
+      email.removeAttribute("aria-invalid");
+      // TODO: send to the spreadsheet endpoint once it exists.
+      status.textContent = "Sign-ups open soon. Thank you for your patience.";
+    });
+  });
+</script>
+
+<style>
+  .newsletter__honeypot {
+    position: absolute;
+    left: -100vw;
+  }
+
+  .newsletter__label {
+    display: block;
+    margin-bottom: var(--space-2xs);
+    color: var(--text-heading);
+    font-size: var(--text-sm);
+  }
+
+  .newsletter__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .newsletter__input {
+    flex: 1 1 14rem;
+    min-height: 2.875rem;
+    padding: var(--space-2xs) var(--space-sm);
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background-color: transparent;
+  }
+
+  .newsletter__input[aria-invalid="true"] {
+    border-color: var(--accent);
+    border-width: 2px;
+  }
+
+  .newsletter__submit {
+    min-height: 2.875rem;
+    padding: var(--space-2xs) var(--space-md);
+    border: var(--border-width) solid var(--accent);
+    border-radius: var(--radius-sm);
+    background-color: var(--accent);
+    color: var(--on-accent);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+  }
+
+  .newsletter__submit:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .newsletter__status:not(:empty) {
+    margin-top: var(--space-2xs);
+    font-size: var(--text-sm);
+  }
+</style>

@@ -1,0 +1,45 @@
+# Site-wide settings: name, navigation, footer.
+# Edit text freely. Keep the structure (indentation and dashes) the same.
+main:
+  name: The Upper Room Collective
+  tagline: For Those Called to Build the Extraordinary.
+  description: A faith-driven accelerator ecosystem for the world’s next unicorn founders.
+  email: tanya@the5collective.org
+
+  nav:
+    - label: About
+      href: /about
+    - label: Run Club
+      href: /run-club
+    - label: Masterclasses
+      href: /masterclasses
+    - label: Design Studio
+      href: /studio
+    - label: Contact
+      href: /contact
+
+  navCta:
+    label: Join the Collective
+    href: /join
+
+  footerGroups:
+    - heading: The Ecosystem
+      links:
+        - label: Founder Run Club
+          href: /run-club
+        - label: Founder Masterclasses
+          href: /masterclasses
+        - label: Founder Design Studio
+          href: /studio
+    - heading: The Collective
+      links:
+        - label: About
+          href: /about
+        - label: Join the Collective
+          href: /join
+        - label: Contact
+          href: /contact
+
+  footerScripture:
+    text: Let Your Light So Shine.
+    reference: Matthew 5:16

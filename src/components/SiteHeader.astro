@@ -1,0 +1,229 @@
+---
+/**
+ * SiteHeader — logo, main navigation and the mobile menu.
+ * Links come from src/content/site.yaml. The mobile menu is a native <dialog>,
+ * which gives focus trapping, Escape-to-close and a backdrop for free.
+ */
+import { getEntry } from "astro:content";
+import Logo from "../assets/brand/logo.svg";
+import Button from "./Button.astro";
+
+const site = (await getEntry("site", "main"))!.data;
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isCurrent = (href: string) => path === href || (href !== "/" && path.startsWith(`${href}/`));
+---
+
+<header class="header" data-surface="ivory">
+  <div class="container header__inner">
+    <a class="header__logo" href="/" aria-label={`${site.name}, home`}>
+      <Logo aria-hidden="true" focusable="false" />
+    </a>
+
+    <nav class="header__nav" aria-label="Main">
+      <ul>
+        {
+          site.nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <Button href={site.navCta.href} arrow={false}>{site.navCta.label}</Button>
+    </nav>
+
+    <button class="header__menu-button" type="button" aria-haspopup="dialog" aria-controls="mobile-menu" data-menu-open>
+      <span class="visually-hidden">Open menu</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3 7h18M3 12h18M3 17h18" fill="none" stroke="currentColor" stroke-width="1.5" />
+      </svg>
+    </button>
+  </div>
+
+  <dialog id="mobile-menu" class="menu" data-surface="wine" aria-label="Menu">
+    <div class="menu__top">
+      <a class="header__logo" href="/" aria-label={`${site.name}, home`}>
+        <Logo aria-hidden="true" focusable="false" />
+      </a>
+      <button class="menu__close" type="button" data-menu-close autofocus>
+        <span class="visually-hidden">Close menu</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </button>
+    </div>
+    <nav aria-label="Mobile">
+      <ul class="menu__list">
+        <li><a href="/" aria-current={path === "/" ? "page" : undefined}>Home</a></li>
+        {
+          site.nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <Button href={site.navCta.href}>{site.navCta.label}</Button>
+  </dialog>
+</header>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>("#mobile-menu");
+  document.querySelector("[data-menu-open]")?.addEventListener("click", () => dialog?.showModal());
+  document.querySelector("[data-menu-close]")?.addEventListener("click", () => dialog?.close());
+  dialog?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => dialog.close()));
+  window.matchMedia("(min-width: 64em)").addEventListener("change", (e) => {
+    if (e.matches) dialog?.close();
+  });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    border-bottom: var(--border-width) solid var(--border);
+    background-color: color-mix(in oklab, var(--surface), transparent 6%);
+    backdrop-filter: blur(8px);
+  }
+
+  .header__inner {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--header-height);
+  }
+
+  .header__logo {
+    display: block;
+    flex-shrink: 0;
+    color: var(--text-heading);
+  }
+
+  .header__logo :global(svg) {
+    width: auto;
+    height: 2.25rem;
+  }
+
+  .header__nav {
+    display: none;
+    gap: var(--space-lg);
+    align-items: center;
+  }
+
+  .header__nav ul {
+    display: flex;
+    gap: var(--space-md);
+    padding: 0;
+    list-style: none;
+  }
+
+  .header__nav a:not(.button) {
+    color: var(--text-strong);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .header__nav a:not(.button):hover,
+  .header__nav a[aria-current="page"] {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+
+  .header__menu-button,
+  .menu__close {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--text-strong);
+    cursor: pointer;
+  }
+
+  .header__menu-button svg,
+  .menu__close svg {
+    width: 1.5rem;
+  }
+
+  @media (width >= 64em) {
+    .header__nav {
+      display: flex;
+    }
+
+    .header__menu-button {
+      display: none;
+    }
+  }
+
+  /* ---- Mobile menu ---- */
+  .menu {
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    padding: var(--space-sm) var(--gutter) var(--space-xl);
+    border: 0;
+    color: var(--text-heading);
+  }
+
+  .menu[open] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .menu::backdrop {
+    background-color: var(--surface);
+  }
+
+  .menu__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: calc(var(--header-height) - var(--space-sm));
+  }
+
+  .menu__close {
+    color: var(--text-heading);
+  }
+
+  .menu__list {
+    display: grid;
+    gap: var(--space-xs);
+    padding: 0;
+    list-style: none;
+  }
+
+  .menu__list a {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    text-decoration: none;
+  }
+
+  .menu__list a[aria-current="page"] {
+    text-decoration: underline;
+    text-decoration-thickness: var(--border-width);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .menu[open] {
+      animation: menu-in var(--duration-base) var(--ease-out);
+    }
+
+    @keyframes menu-in {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+    }
+  }
+</style>

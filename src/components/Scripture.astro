@@ -1,0 +1,39 @@
+---
+/** Scripture — a quoted verse with its reference. Also used for testimonials (pass cite). */
+interface Props {
+  text: string;
+  reference: string;
+  size?: "md" | "lg";
+}
+const { text, reference, size = "md" } = Astro.props;
+---
+
+<figure class:list={["scripture", `scripture--${size}`]}>
+  <blockquote>
+    <p>“{text}”</p>
+  </blockquote>
+  <figcaption>{reference}</figcaption>
+</figure>
+
+<style>
+  .scripture blockquote p {
+    color: var(--text-heading);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-style: italic;
+    line-height: var(--leading-snug);
+  }
+
+  .scripture--lg blockquote p {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-snug);
+  }
+
+  .scripture figcaption {
+    margin-top: var(--space-sm);
+    color: var(--text-body);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+</style>

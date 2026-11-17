@@ -1,0 +1,63 @@
+---
+/**
+ * Media — every content image goes through this.
+ * Requires width/height (prevents layout shift) and alt text.
+ * priority: true only for the single largest image above the fold.
+ */
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  ratio?: "landscape" | "portrait" | "square" | "wide";
+  priority?: boolean;
+  rounded?: boolean;
+}
+
+const { src, alt, width, height, ratio = "landscape", priority = false, rounded = true } = Astro.props;
+---
+
+<div class:list={["media", `media--${ratio}`, { "media--rounded": rounded }]}>
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={priority ? "eager" : "lazy"}
+    decoding={priority ? "sync" : "async"}
+    fetchpriority={priority ? "high" : "auto"}
+  />
+</div>
+
+<style>
+  .media {
+    overflow: hidden;
+    background-color: var(--surface-sunken);
+  }
+
+  .media--rounded {
+    border-radius: var(--radius-md);
+  }
+
+  .media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .media--landscape {
+    aspect-ratio: 10 / 7;
+  }
+
+  .media--portrait {
+    aspect-ratio: 4 / 5;
+  }
+
+  .media--square {
+    aspect-ratio: 1;
+  }
+
+  .media--wide {
+    aspect-ratio: 16 / 9;
+  }
+</style>

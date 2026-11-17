@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import Button from "../components/Button.astro";
+---
+
+<BaseLayout title="Page not found | The Upper Room Collective" description="This page could not be found." noindex>
+  <Section width="narrow" align="center" spacing="loose" labelledby="nf-heading">
+    <div class="flow">
+      <Eyebrow>404</Eyebrow>
+      <h1 id="nf-heading">This room is empty.</h1>
+      <p>The page you were looking for has moved or no longer exists.</p>
+      <Button href="/">Return home</Button>
+    </div>
+  </Section>
+</BaseLayout>

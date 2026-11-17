@@ -1,0 +1,171 @@
+/* ==========================================================================
+   Design tokens — the ONLY place raw colors, font stacks and scale values live.
+   Stylelint blocks raw hex/rgb values everywhere else in src/.
+
+   Layer 1  Brand   — the three brand colors. Never use these directly in components.
+   Layer 2  Scale   — tints and shades derived from the brand colors.
+   Layer 3  Semantic — what components use: surfaces, text, borders, type, space.
+   ========================================================================== */
+
+:root {
+  /* ---- Layer 1: brand (from the logo files; stone set 2026-11-17) ---- */
+  --brand-wine: #650d22;
+  --brand-ivory: #f8f3ea;
+  --brand-stone: #0d0b0b;
+
+  /* ---- Layer 2: derived scale (color-mix keeps everything tied to the brand) ---- */
+  --wine-900: color-mix(in oklab, var(--brand-wine), var(--brand-stone) 45%);
+  --wine-800: color-mix(in oklab, var(--brand-wine), var(--brand-stone) 20%);
+  --wine-700: var(--brand-wine);
+  --wine-600: color-mix(in oklab, var(--brand-wine), var(--brand-ivory) 12%);
+  --wine-200: color-mix(in oklab, var(--brand-wine), var(--brand-ivory) 75%);
+  --wine-100: color-mix(in oklab, var(--brand-wine), var(--brand-ivory) 88%);
+  --ivory-50: color-mix(in oklab, var(--brand-ivory), white 45%);
+  --ivory-100: var(--brand-ivory);
+  --ivory-200: color-mix(in oklab, var(--brand-ivory), var(--brand-wine) 6%);
+  --ivory-300: color-mix(in oklab, var(--brand-ivory), var(--brand-stone) 12%);
+  --stone-900: var(--brand-stone);
+  --stone-800: color-mix(in oklab, var(--brand-stone), var(--brand-ivory) 8%);
+
+  /* Body-text colors approved in Framer (Cedar Design → "The Upper Room Collective").
+     Flattened from 70% opacity so contrast is predictable. */
+  --ivory-muted: #ccaeae;      /* ivory 70% on wine  — 6.3:1 */
+  --ivory-muted-dark: #b2ada7; /* ivory 70% on stone — 8.8:1 */
+  --wine-muted: #745257;       /* dark wine 70% on ivory — 6.2:1 */
+
+  /* ---- Layer 3: semantic — default surface is ivory ---- */
+  --surface: var(--ivory-100);
+  --surface-raised: var(--ivory-50);
+  --surface-sunken: var(--ivory-200);
+  --text-heading: var(--wine-700);
+  --text-body: var(--wine-muted);
+  --text-strong: var(--stone-900);
+  --accent: var(--wine-700);
+  --accent-hover: var(--wine-800);
+  --on-accent: var(--ivory-100);
+  --border: color-mix(in oklab, var(--wine-700), transparent 82%);
+  --border-strong: color-mix(in oklab, var(--wine-700), transparent 60%);
+  --focus-ring: var(--wine-700);
+  --error: var(--wine-700);
+
+  /* ---- Typography ---- */
+  --font-display: var(--font-eb-garamond), "EB Garamond", Georgia, serif;
+  --font-body: var(--font-instrument-sans), "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+
+  /* Fluid type scale: min at 360px viewport, max at 1440px */
+  --text-xs: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --text-sm: clamp(0.9rem, 0.87rem + 0.12vw, 0.98rem);
+  --text-md: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --text-lg: clamp(1.15rem, 1.07rem + 0.37vw, 1.4rem);
+  --text-xl: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+  --text-2xl: clamp(2rem, 1.6rem + 1.8vw, 2.5rem);
+  --text-3xl: clamp(2.5rem, 1.9rem + 2.7vw, 3.75rem);
+  --text-4xl: clamp(2.9rem, 2rem + 4.2vw, 5.25rem);
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.2;
+  --leading-body: 1.6;
+  --tracking-display: -0.01em;
+  --tracking-caps: 0.14em;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* ---- Space (4px base, fluid at the top end) ---- */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  --space-2xl: clamp(3.5rem, 2.6rem + 4vw, 6rem);
+  --space-3xl: clamp(4.5rem, 3rem + 6.5vw, 9rem);
+
+  /* ---- Layout ---- */
+  --container-max: 75rem;
+  --container-narrow: 46rem;
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+  --header-height: 4.5rem;
+
+  /* ---- Shape & depth ---- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-pill: 999px;
+  --border-width: 1px;
+  --shadow-card: 0 18px 40px -24px color-mix(in oklab, var(--brand-stone), transparent 60%);
+
+  /* ---- Motion (reduced to near-zero by prefers-reduced-motion in base.css) ---- */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 600ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---- Layers ---- */
+  --z-header: 50;
+  --z-menu: 60;
+
+  color-scheme: light;
+}
+
+/* ==========================================================================
+   Surface themes. Put data-surface on any section and everything inside
+   re-colors from the approved combos. Components never pick colors themselves.
+   ========================================================================== */
+
+[data-surface="ivory"] {
+  --surface: var(--ivory-100);
+  --text-heading: var(--wine-700);
+  --text-body: var(--wine-muted);
+  --text-strong: var(--stone-900);
+  --accent: var(--wine-700);
+  --accent-hover: var(--wine-800);
+  --on-accent: var(--ivory-100);
+  --border: color-mix(in oklab, var(--wine-700), transparent 82%);
+  --border-strong: color-mix(in oklab, var(--wine-700), transparent 60%);
+  --focus-ring: var(--wine-700);
+}
+
+[data-surface="ivory-deep"] {
+  --surface: var(--ivory-200);
+  --text-heading: var(--wine-700);
+  --text-body: var(--wine-muted);
+  --text-strong: var(--stone-900);
+  --accent: var(--wine-700);
+  --accent-hover: var(--wine-800);
+  --on-accent: var(--ivory-100);
+  --border: color-mix(in oklab, var(--wine-700), transparent 80%);
+  --border-strong: color-mix(in oklab, var(--wine-700), transparent 58%);
+  --focus-ring: var(--wine-700);
+}
+
+[data-surface="wine"] {
+  --surface: var(--wine-700);
+  --text-heading: var(--ivory-100);
+  --text-body: var(--ivory-muted);
+  --text-strong: var(--ivory-100);
+  --accent: var(--ivory-100);
+  --accent-hover: var(--ivory-200);
+  --on-accent: var(--wine-700);
+  --border: color-mix(in oklab, var(--ivory-100), transparent 80%);
+  --border-strong: color-mix(in oklab, var(--ivory-100), transparent 55%);
+  --focus-ring: var(--ivory-100);
+}
+
+[data-surface="stone"] {
+  --surface: var(--stone-900);
+  --text-heading: var(--ivory-100);
+  --text-body: var(--ivory-muted-dark);
+  --text-strong: var(--ivory-100);
+  --accent: var(--ivory-100);
+  --accent-hover: var(--ivory-200);
+  --on-accent: var(--stone-900);
+  --border: color-mix(in oklab, var(--ivory-100), transparent 84%);
+  --border-strong: color-mix(in oklab, var(--ivory-100), transparent 60%);
+  --focus-ring: var(--ivory-100);
+}
+
+[data-surface] {
+  background-color: var(--surface);
+  color: var(--text-body);
+}

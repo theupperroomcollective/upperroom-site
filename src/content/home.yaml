@@ -1,0 +1,75 @@
+# Home page copy. Edit the text; keep the structure.
+home:
+  seo:
+    title: The Upper Room Collective | Build the Extraordinary
+    description: A faith-driven accelerator ecosystem for the world’s next unicorn founders. Masterclasses, Design Studio, Run Club, Dinners and Podcast.
+
+  hero:
+    heading: For Those Called to Build the Extraordinary.
+    kicker: Category-Defining Visions and Ventures.
+    lede: A faith-driven accelerator ecosystem for the world’s next unicorn founders.
+    primary:
+      label: Join the Collective
+      href: /join
+    secondary:
+      label: Explore the Ecosystem
+      href: "#ecosystem-heading"
+    image:
+      src: /images/placeholders/landscape.svg
+      alt: Placeholder for a photo of the Bay at sunset
+      width: 1200
+      height: 840
+    scripture:
+      text: What no eye has seen, what no ear has heard, and what no human mind has conceived, the things God has prepared for those who love him.
+      reference: 1 Corinthians 2:9 (NIV)
+
+  audience:
+    eyebrow: Who We’re For
+    heading: For those called to build category-defining visions and ventures with impact and scale.
+    lede: We help faith-driven founders move from bold ideas to real ventures through learning, strategy, relationships and resources.
+    points:
+      - Practical founder education and frameworks
+      - Strategic consulting for vision, brand and venture design
+      - Curated Kingdom relationships with founders and funders
+    link:
+      label: Read Our Story
+      href: /about
+
+  mandate:
+    eyebrow: Our Mandate
+    words:
+      - Serve People.
+      - Solve Problems.
+      - Scale Impact.
+    purpose:
+      - For the glory of God.
+      - For the good of nations.
+      - For the greatness of generations.
+
+  ecosystem:
+    eyebrow: Our Ecosystem
+    heading: Where God-Sized Visions Take Shape.
+    strap: Build · Equip · Empower · Break Bread · Do Mighty Exploits
+    body: Transformational experiences, resources, and relationships that give life and legs to God-sized visions, turning God-given ideas into God-sized impact.
+    impact:
+      - Exceptional People.
+      - Extraordinary Visions.
+      - Eternal Impact.
+
+  story:
+    eyebrow: Founder Stories
+    quote: As a new Founder I’m looking for ideas to help me build my brand. The Upper Room Collective helped encourage me on HOW to stay true to my values while operating in the market place.
+    name: Joshua Cruz
+    role: CEO and Founder, Verano Cafecito
+
+  closing:
+    lines:
+      - God-Sized Visions.
+      - Exceptional Visionaries.
+      - World-Changing Ventures.
+    primary:
+      label: Explore the Ecosystem
+      href: "#ecosystem-heading"
+    secondary:
+      label: Join the Collective
+      href: /join

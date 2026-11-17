@@ -1,0 +1,293 @@
+---
+/**
+ * Style guide — the visual source of truth for the design system.
+ * Every token and component appears here. Not indexed by search engines.
+ * When a component or token changes, check this page before anything else.
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import Button from "../components/Button.astro";
+import Media from "../components/Media.astro";
+import Scripture from "../components/Scripture.astro";
+import PillarCard from "../components/PillarCard.astro";
+import NewsletterForm from "../components/NewsletterForm.astro";
+
+const pillar = (await getCollection("pillars")).map((p) => p.data).find((p) => p.status)!;
+
+const brand = [
+  { name: "Wine", token: "--brand-wine", hex: "#650D22" },
+  { name: "Ivory", token: "--brand-ivory", hex: "#F8F3EA" },
+  { name: "Stone", token: "--brand-stone", hex: "#0D0B0B" },
+];
+const scale = [
+  "--wine-900",
+  "--wine-800",
+  "--wine-700",
+  "--wine-600",
+  "--wine-200",
+  "--wine-100",
+  "--ivory-50",
+  "--ivory-100",
+  "--ivory-200",
+  "--ivory-300",
+  "--stone-800",
+  "--stone-900",
+];
+const surfaces = [
+  { surface: "ivory", label: "Ivory", body: "Body: --wine-muted · 6.2:1" },
+  { surface: "ivory-deep", label: "Ivory deep", body: "Body: --wine-muted" },
+  { surface: "wine", label: "Wine", body: "Body: --ivory-muted · 6.3:1" },
+  { surface: "stone", label: "Stone", body: "Body: --ivory-muted-dark · 8.8:1" },
+] as const;
+const typeScale = ["--text-4xl", "--text-3xl", "--text-2xl", "--text-xl", "--text-lg", "--text-md", "--text-sm", "--text-xs"];
+const space = ["--space-3xs", "--space-2xs", "--space-xs", "--space-sm", "--space-md", "--space-lg", "--space-xl", "--space-2xl", "--space-3xl"];
+---
+
+<BaseLayout title="Style guide | The Upper Room Collective" description="Design system reference." noindex>
+  <Section labelledby="sg-title" spacing="tight">
+    <div class="flow">
+      <Eyebrow>Design system</Eyebrow>
+      <h1 id="sg-title">Style guide</h1>
+      <p class="lede">
+        Every color, type size, space value and component on the site. Tokens live in
+        <code>src/styles/tokens.css</code>; components in <code>src/components/</code>.
+      </p>
+    </div>
+  </Section>
+
+  <Section labelledby="sg-colors" surface="ivory-deep" spacing="tight">
+    <div class="flow">
+      <h2 id="sg-colors">Color</h2>
+      <h3>Brand</h3>
+      <ul class="swatches swatches--brand">
+        {
+          brand.map((c) => (
+            <li>
+              <span class="swatch" style={`background: var(${c.token})`} />
+              <strong>{c.name}</strong>
+              <code>{c.hex}</code>
+              <code>{c.token}</code>
+            </li>
+          ))
+        }
+      </ul>
+      <h3>Derived scale</h3>
+      <ul class="swatches">
+        {
+          scale.map((token) => (
+            <li>
+              <span class="swatch swatch--sm" style={`background: var(${token})`} />
+              <code>{token}</code>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Section>
+
+  <Section labelledby="sg-surfaces" spacing="tight">
+    <div class="flow">
+      <h2 id="sg-surfaces">Surfaces</h2>
+      <p>The only approved color combinations. Set with <code>surface="…"</code> on a Section.</p>
+      <div class="surfaces">
+        {
+          surfaces.map((s) => (
+            <div class="surface-card" data-surface={s.surface}>
+              <Eyebrow>{s.label}</Eyebrow>
+              <h3>Welcome to the Upper Room</h3>
+              <p>A faith-driven accelerator ecosystem for the world’s next unicorn founders.</p>
+              <p class="small">{s.body}</p>
+              <div class="actions">
+                <Button href="#" arrow={false}>Primary</Button>
+                <Button href="#" variant="secondary" arrow={false}>Secondary</Button>
+                <Button href="#" variant="text">Text link</Button>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Section labelledby="sg-type" surface="ivory-deep" spacing="tight">
+    <div class="flow">
+      <h2 id="sg-type">Typography</h2>
+      <p>Headlines: EB Garamond. Body: Instrument Sans. All sizes are fluid between 360px and 1440px wide.</p>
+      <ul class="type-scale">
+        {
+          typeScale.map((token, i) => (
+            <li>
+              <code>{token}</code>
+              <span class:list={[i < 5 ? "display" : "sans"]} style={`font-size: var(${token})`}>
+                {i < 5 ? "For Those Called to Build" : "Practical founder education and frameworks"}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Section>
+
+  <Section labelledby="sg-space" spacing="tight">
+    <div class="flow">
+      <h2 id="sg-space">Space</h2>
+      <ul class="space-scale">
+        {
+          space.map((token) => (
+            <li>
+              <code>{token}</code>
+              <span class="space-bar" style={`width: var(${token})`} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Section>
+
+  <Section labelledby="sg-components" surface="ivory-deep" spacing="tight">
+    <div class="flow">
+      <h2 id="sg-components">Components</h2>
+
+      <h3>Eyebrow</h3>
+      <Eyebrow>Who We’re For</Eyebrow>
+      <Eyebrow ruled>Founder Stories</Eyebrow>
+
+      <h3>Scripture / quote</h3>
+      <Scripture text="So I run with purpose in every step." reference="1 Corinthians 9:26 (NLT)" />
+
+      <h3>Media</h3>
+      <div class="media-row">
+        <Media src="/images/placeholders/landscape.svg" alt="Landscape placeholder" width={1200} height={840} />
+        <Media src="/images/placeholders/landscape.svg" alt="Square placeholder" width={1200} height={840} ratio="square" />
+        <Media src="/images/placeholders/landscape.svg" alt="Portrait placeholder" width={1200} height={840} ratio="portrait" />
+      </div>
+
+      <h3>Pillar card</h3>
+      <div class="card-demo">
+        <PillarCard pillar={pillar} headingLevel="h3" />
+      </div>
+
+      <h3>Newsletter form</h3>
+      <div class="form-demo">
+        <NewsletterForm id="styleguide-newsletter" />
+      </div>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  code {
+    font-size: var(--text-xs);
+  }
+
+  .lede {
+    max-width: 40rem;
+    font-size: var(--text-lg);
+  }
+
+  .small {
+    font-size: var(--text-xs);
+  }
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: var(--space-md);
+    padding: 0;
+    list-style: none;
+  }
+
+  .swatches--brand {
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  }
+
+  .swatches li {
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .swatch {
+    display: block;
+    height: 6rem;
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+  }
+
+  .swatch--sm {
+    height: 3.5rem;
+  }
+
+  .surfaces {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: var(--space-md);
+  }
+
+  .surface-card {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+    border-radius: var(--radius-md);
+  }
+
+  .surface-card h3 {
+    font-size: var(--text-2xl);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .type-scale,
+  .space-scale {
+    display: grid;
+    gap: var(--space-sm);
+    padding: 0;
+    list-style: none;
+  }
+
+  .type-scale li {
+    display: grid;
+    gap: var(--space-3xs);
+    padding-bottom: var(--space-sm);
+    border-bottom: var(--border-width) solid var(--border);
+  }
+
+  .display {
+    color: var(--text-heading);
+    font-family: var(--font-display);
+    line-height: var(--leading-tight);
+  }
+
+  .space-scale li {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    align-items: center;
+  }
+
+  .space-bar {
+    display: block;
+    height: var(--space-sm);
+    background-color: var(--accent);
+  }
+
+  .media-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: var(--space-md);
+    align-items: start;
+  }
+
+  .card-demo {
+    max-width: 24rem;
+  }
+
+  .form-demo {
+    max-width: 28rem;
+  }
+</style>

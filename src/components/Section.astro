@@ -1,0 +1,61 @@
+---
+/**
+ * Section — every page block is wrapped in one.
+ * surface: which approved color combo the section uses (see tokens.css).
+ * width:   "default" (75rem) or "narrow" (46rem, for reading).
+ * spacing: vertical padding, "default" | "tight" | "loose".
+ * Pass labelledby (the id of the section's heading) or label for screen readers.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"section"> {
+  surface?: "ivory" | "ivory-deep" | "wine" | "stone";
+  width?: "default" | "narrow";
+  spacing?: "default" | "tight" | "loose";
+  labelledby?: string;
+  label?: string;
+  align?: "start" | "center";
+}
+
+const {
+  surface = "ivory",
+  width = "default",
+  spacing = "default",
+  labelledby,
+  label,
+  align = "start",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<section
+  class:list={["section", `section--${spacing}`, `section--${align}`, className]}
+  data-surface={surface}
+  aria-labelledby={labelledby}
+  aria-label={label}
+  {...rest}
+>
+  <div class:list={["container", { "container--narrow": width === "narrow" }]}>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    position: relative;
+    padding-block: var(--space-3xl);
+  }
+
+  .section--tight {
+    padding-block: var(--space-2xl);
+  }
+
+  .section--loose {
+    padding-block: calc(var(--space-3xl) * 1.25);
+  }
+
+  .section--center {
+    text-align: center;
+  }
+</style>

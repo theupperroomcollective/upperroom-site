@@ -1,0 +1,66 @@
+# The five pillars, shown as cards on the home page.
+# href + cta: the page the card links to. Leave both out for pillars with no page yet.
+# status is optional and must be one of: Waitlist open, Invitation only, Coming soon.
+run-club:
+  order: 1
+  verb: Build
+  title: Founder Run Club
+  summary: Cultivate meaningful relationships through movement, shared conviction and community.
+  href: /run-club
+  cta: Register for a Run
+  image:
+    src: /images/placeholders/landscape.svg
+    alt: Placeholder for a photo of runners at golden hour
+    width: 1200
+    height: 840
+
+masterclasses:
+  order: 2
+  verb: Equip
+  title: Founder Masterclasses
+  summary: Gain knowledge, frameworks and strategic insight to build what doesn't exist yet.
+  href: /masterclasses
+  cta: Explore Masterclasses
+  status: Waitlist open
+  image:
+    src: /images/placeholders/landscape.svg
+    alt: Placeholder for a photo of an open journal and pen
+    width: 1200
+    height: 840
+
+studio:
+  order: 3
+  verb: Empower
+  title: Founder Design Studio
+  summary: Translate bold visions into executable strategy, distinctive positioning and foundations for growth.
+  href: /studio
+  cta: Request a Consultation
+  image:
+    src: /images/placeholders/landscape.svg
+    alt: Placeholder for a photo of a founder sketching plans
+    width: 1200
+    height: 840
+
+dinners:
+  order: 4
+  verb: Break Bread
+  title: Founder Dinners
+  summary: Gather around intentionally curated tables where God-given visions are championed and Kingdom relationships take root.
+  status: Coming soon
+  image:
+    src: /images/placeholders/landscape.svg
+    alt: Placeholder for a photo of a candlelit dinner table
+    width: 1200
+    height: 840
+
+podcast:
+  order: 5
+  verb: Do Mighty Exploits
+  title: Founder Podcast
+  summary: Discover the stories, convictions and insights of builders pioneering what comes next.
+  status: Coming soon
+  image:
+    src: /images/placeholders/landscape.svg
+    alt: Placeholder for a photo of a studio microphone
+    width: 1200
+    height: 840

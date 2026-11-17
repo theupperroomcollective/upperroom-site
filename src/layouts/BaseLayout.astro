@@ -1,0 +1,64 @@
+---
+/**
+ * BaseLayout — wraps every page: <head>/SEO, fonts, analytics, header, footer.
+ * Pages pass title + description; everything else is handled here.
+ */
+import { Font } from "astro:assets";
+import { getEntry } from "astro:content";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import "../styles/tokens.css";
+import "../styles/base.css";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const site = (await getEntry("site", "main"))!.data;
+const { title, description, image = "/brand/logo-wine.png", noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+const fathomSiteId = import.meta.env.PUBLIC_FATHOM_SITE_ID;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#650D22" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <Font cssVariable="--font-eb-garamond" preload={[{ weight: 400, style: "normal", subset: "latin" }]} />
+    <Font cssVariable="--font-instrument-sans" preload={[{ weight: 400, style: "normal", subset: "latin" }]} />
+
+    {
+      fathomSiteId && (
+        <script is:inline src="https://cdn.usefathom.com/script.js" data-site={fathomSiteId} defer />
+      )
+    }
+  </head>
+  <body data-surface="ivory">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>
