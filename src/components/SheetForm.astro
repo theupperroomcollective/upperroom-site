@@ -135,7 +135,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
                     required={field.required}
                     aria-describedby={errorId(field.name)}
                   >
-                    <option value="">Choose one</option>
+                    <option value="">Select an option</option>
                     {field.options?.map((option) => (
                       <option value={option}>{option}</option>
                     ))}
@@ -366,6 +366,11 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
     padding-right: var(--space-2xl);
     appearance: none;
     cursor: pointer;
+  }
+
+  /* Show "Select an option" in the muted body color until something is chosen. */
+  .sheet-form__select select:has(option[value=""]:checked) {
+    color: var(--text-body);
   }
 
   .sheet-form__select::after {

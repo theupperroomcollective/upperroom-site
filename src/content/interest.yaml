@@ -1,9 +1,9 @@
-# Interest landing page (/interest). No header or footer: just the message and the form.
+# Home page (/) during prelaunch. No header or footer: just the message and the form.
 # Edit the text and fields; keep the structure. Each submission becomes a row in the
 # Google Sheet tab named after `form.name` (see integrations/google-sheets/README.md).
 interest:
   seo:
-    title: Join the Collective | The Upper Room Collective
+    title: The Upper Room Collective | For Those Called to Build
     description: Connect with a community of faith-driven founders, funders and builders, and stay up to date on what’s next.
 
   heading: For Those Called to Build the Extraordinary.
@@ -21,13 +21,6 @@ interest:
         type: text
         autocomplete: name
         required: true
-        half: true
-      - name: business
-        label: Business
-        type: text
-        autocomplete: organization
-        required: true
-        half: true
       - name: email
         label: Email address
         type: email
@@ -38,6 +31,18 @@ interest:
         label: Phone
         type: tel
         autocomplete: tel
+        required: true
+        half: true
+      - name: business
+        label: Company name
+        type: text
+        autocomplete: organization
+        required: true
+        half: true
+      - name: job_title
+        label: What is your job title?
+        type: text
+        autocomplete: organization-title
         required: true
         half: true
       - name: website
@@ -52,6 +57,16 @@ interest:
         autocomplete: "off"
         required: true
         half: true
+      - name: journey
+        label: Where are you in your founder journey?
+        type: select
+        required: true
+        options:
+          - I’m exploring entrepreneurship and finding my next idea.
+          - I have an idea or a problem I want to explore.
+          - I’m testing an idea or building an early version.
+          - I’ve launched and am growing a venture.
+          - I’m joining as an operator, investor, or supporter of founders.
       - name: interests
         label: I would like…
         type: checkboxes

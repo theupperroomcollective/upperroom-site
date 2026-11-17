@@ -4,16 +4,5 @@
 
 ## Pages
 
-- [About](/about): Who we are, who we serve, and our mandate.
-- [Founder Run Club](/run-club): Saturday morning runs in Golden Gate Park for faith-driven founders, funders and builders.
-- [Founder Masterclasses](/masterclasses): Virtual founder education: ideation, brand development, building to last, fundraising and pivoting.
-- [Founder Design Studio](/studio): Strategy, brand identity and venture foundations for visionary founders, by consultation.
-- [Join the Collective](/join): Newsletter and community waitlist.
-- [Contact](/contact): Partnerships, media and general enquiries.
+- [Home](/): Connect with the community and sign up for updates.
 - [Privacy Policy](/privacy)
-- [Terms of Use](/terms)
-
-## Coming soon
-
-- Founder Dinners: invitation-only, curated dinners for founders and funders.
-- Founder Podcast: conversations with faith-driven builders.

@@ -7,6 +7,7 @@ import { Font } from "astro:assets";
 import { getEntry } from "astro:content";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import Logo from "../assets/brand/logo.svg";
 import "../styles/tokens.css";
 import "../styles/base.css";
 
@@ -24,6 +25,8 @@ const { title, description, image = "/brand/logo-wine.png", noindex = false, bar
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 const fathomSiteId = import.meta.env.PUBLIC_FATHOM_SITE_ID;
+// Prelaunch: no nav or footer (they'd link to unfinished pages), just the logo home.
+const chrome = bare ? "none" : site.prelaunch ? "minimal" : "full";
 ---
 
 <!doctype html>
@@ -57,10 +60,40 @@ const fathomSiteId = import.meta.env.PUBLIC_FATHOM_SITE_ID;
   </head>
   <body data-surface="ivory">
     <a class="skip-link" href="#main">Skip to content</a>
-    {!bare && <SiteHeader />}
+    {chrome === "full" && <SiteHeader />}
+    {
+      chrome === "minimal" && (
+        <header class="minimal-header" data-surface="ivory">
+          <div class="container">
+            <a class="minimal-header__logo" href="/" aria-label={`${site.name}, home`}>
+              <Logo aria-hidden="true" focusable="false" />
+            </a>
+          </div>
+        </header>
+      )
+    }
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    {!bare && <SiteFooter />}
+    {chrome === "full" && <SiteFooter />}
   </body>
 </html>
+
+<style>
+  .minimal-header {
+    padding-top: var(--space-lg);
+    text-align: center;
+  }
+
+  .minimal-header__logo {
+    display: inline-block;
+    width: clamp(8rem, 7rem + 4vw, 10rem);
+    color: var(--text-heading);
+  }
+
+  .minimal-header__logo :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

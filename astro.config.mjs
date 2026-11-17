@@ -6,11 +6,26 @@ import sitemap from "@astrojs/sitemap";
 // environment once it is; canonical URLs and social images use it.
 const site = process.env.SITE_URL || "https://example.com";
 
+// Prelaunch: only the sign-up home page (/) and the Privacy Policy are built.
+// Draft pages in src/drafts/ are served by `npm run dev` only, so the team can keep
+// designing them without anything being public. At launch, move them back to src/pages/.
+/** @type {import("astro").AstroIntegration} */
+const localDrafts = {
+  name: "local-drafts",
+  hooks: {
+    "astro:config:setup": ({ command, injectRoute }) => {
+      if (command !== "dev") return;
+      injectRoute({ pattern: "/draft/home", entrypoint: "./src/drafts/home.astro" });
+      injectRoute({ pattern: "/styleguide", entrypoint: "./src/drafts/styleguide.astro" });
+    },
+  },
+};
+
 export default defineConfig({
   site,
   trailingSlash: "never",
   build: { format: "file" },
-  integrations: [sitemap({ filter: (page) => !page.includes("/styleguide") && !page.includes("/404") })],
+  integrations: [localDrafts, sitemap({ filter: (page) => !page.includes("/styleguide") && !page.includes("/404") })],
   fonts: [
     {
       provider: fontProviders.fontsource(),

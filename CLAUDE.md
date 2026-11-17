@@ -7,21 +7,22 @@ The people asking you for changes are often not developers: explain in plain lan
 A small brochure site for The Upper Room Collective, a faith-driven founder accelerator in the San Francisco Bay Area.
 Built with **Astro** (static HTML, almost no JavaScript). Hosting: Vercel. Analytics: Fathom.
 
-## Pages (the full site for now)
+## Pages
+**Prelaunch (since 2026-11-17):** only two pages are public. The home page is the sign-up form, and the Privacy Policy is linked from it. Nothing else is built for production, linked, or listed in the sitemap. `prelaunch: true` in `site.yaml` swaps the header and footer for just the logo on other pages.
+
 | Page | URL | Status |
 |---|---|---|
-| Home | `/` | Built (first-pass layout) |
-| About | `/about` | Waiting for content and design |
-| Founder Run Club | `/run-club` | Waiting for content and design |
-| Founder Masterclasses | `/masterclasses` | Waiting for content and design |
-| Founder Design Studio | `/studio` | Waiting for content and design |
-| Contact | `/contact` | Waiting for content and design |
-| Join the Collective | `/join` | Waiting for content and design |
+| Home (sign-up form) | `/` | Live. Standalone: no header or footer. Copy and fields in `src/content/interest.yaml` |
 | Privacy Policy | `/privacy` | Draft, pending legal review (`src/content/legal/privacy.md`) |
-| Terms of Use | `/terms` | Outline only, wording must come from counsel (`src/content/legal/terms.md`) |
-| Interest landing page | `/interest` | Built. Standalone: no header or footer (`bare` layout). Copy and fields in `src/content/interest.yaml` |
+| Full home page design | `/draft/home` | Local only (`npm run dev`), `src/drafts/home.astro` |
+| Style guide | `/styleguide` | Local only (`npm run dev`), `src/drafts/styleguide.astro` |
+| Terms of Use | `/terms` | Local only (`live: false`); wording must come from counsel |
 
-The three experience pages sit under an **Experiences** dropdown in the nav (more will be added; there will be five). Founder Dinners and Founder Podcast are "Coming soon" cards on the home page only, with no pages and no links. Don't add pages beyond this list without the owner's approval.
+Planned for launch, waiting for content and design: About `/about`, Founder Run Club `/run-club`, Founder Masterclasses `/masterclasses`, Founder Design Studio `/studio`, Contact `/contact`, Join `/join`. The three experience pages will sit under an **Experiences** dropdown (there will be five). Founder Dinners and Founder Podcast are "Coming soon" cards on the home page only.
+
+Don't publish any other page, link to one from a public page, or set `prelaunch: false` without the owner's approval. New pages in progress go in `src/drafts/` and are added to the `localDrafts` list in `astro.config.mjs`.
+
+**At launch:** move the drafts back into `src/pages/` (the full design becomes `index.astro`), set `prelaunch: false` and `live: true` on Terms, and update this table.
 
 ## Where things live
 | What | Where |
@@ -37,7 +38,7 @@ The three experience pages sit under an **Experiences** dropdown in the nav (mor
 | Colors, fonts, sizes, spacing | `src/styles/tokens.css` — the only place raw values live |
 | Global element styles | `src/styles/base.css` |
 | Images | `public/images/` |
-| Living style guide | `/styleguide` (`src/pages/styleguide.astro`) |
+| Living style guide | `/styleguide` in local dev (`src/drafts/styleguide.astro`) |
 | The original HTML site (reference only, not served) | `reference/legacy-site/` |
 
 ## The design system — non-negotiable

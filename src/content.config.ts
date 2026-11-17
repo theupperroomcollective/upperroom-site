@@ -35,6 +35,10 @@ const site = defineCollection({
   loader: file("src/content/site.yaml"),
   schema: z.object({
     name: z.string(),
+    prelaunch: z
+      .boolean()
+      .default(false)
+      .describe("true = pages show only the logo (linking home) instead of the full header and footer"),
     tagline: z.string(),
     description: z.string().max(160),
     email: z.email(),
@@ -61,6 +65,7 @@ const legal = defineCollection({
     description: z.string().max(160),
     updated: z.coerce.date(),
     draft: z.boolean().default(true).describe("Shows a 'draft, pending legal review' notice while true"),
+    live: z.boolean().default(true).describe("false = only visible in local dev (npm run dev), not built for production"),
   }),
 });
 

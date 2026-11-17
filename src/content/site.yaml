@@ -2,6 +2,9 @@
 # Edit text freely. Keep the structure (indentation and dashes) the same.
 main:
   name: The Upper Room Collective
+  # Prelaunch: other pages show just the logo (linking home), no nav or footer,
+  # so nothing unfinished is discoverable. Set to false at launch.
+  prelaunch: true
   tagline: For Those Called to Build the Extraordinary.
   description: A faith-driven accelerator ecosystem for the world’s next unicorn founders.
   email: tanya@the5collective.org

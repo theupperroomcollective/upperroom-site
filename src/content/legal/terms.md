@@ -3,6 +3,7 @@ title: Terms of Use
 description: The terms that apply when you use The Upper Room Collective website.
 updated: 2026-11-17
 draft: true
+live: false
 ---
 
 <!--

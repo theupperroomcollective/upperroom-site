@@ -12,7 +12,8 @@ import Prose from "../components/Prose.astro";
 
 export const getStaticPaths = (async () => {
   const pages = await getCollection("legal");
-  return pages.map((page) => ({ params: { legal: page.id }, props: { page } }));
+  // Prelaunch: pages marked live: false (e.g. Terms) exist only in local dev.
+  return pages.filter((page) => import.meta.env.DEV || page.data.live).map((page) => ({ params: { legal: page.id }, props: { page } }));
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;

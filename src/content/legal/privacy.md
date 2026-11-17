@@ -22,7 +22,8 @@ The Upper Room Collective ("we", "us", "our") is a faith-driven founder accelera
 
 **Information you give us.** When you complete a form on this site, we collect the details you choose to share. Depending on the form, this can include:
 
-- your name, business name, email address and phone number
+- your name, company name, job title, email address and phone number
+- where you are in your founder journey
 - your website and LinkedIn profile
 - what you are building, and anything else you write in a message
 - which experiences or updates you are interested in, such as consulting, masterclasses or Run Club
