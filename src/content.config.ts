@@ -125,6 +125,7 @@ const formField = z
     required: z.boolean().default(false),
     autocomplete: z.string().optional(),
     options: z.array(z.string().min(1)).optional().describe("Required for select and checkboxes"),
+    hint: z.string().optional().describe("Short help text shown under the label"),
     half: z.boolean().default(false).describe("Sit side by side with the next half-width field on wider screens"),
   })
   .refine((f) => !["select", "checkboxes"].includes(f.type) || (f.options && f.options.length > 0), {

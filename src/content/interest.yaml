@@ -78,7 +78,8 @@ interest:
           - To sign up for the Founder Design Studio
           - Consulting services
       - name: building
-        label: What are you building?
+        label: What are you building, exploring, or interested in backing?
+        hint: In one or two sentences, share a venture, a problem, or a sector you’re interested in. If you’re funding or supporting founders, tell us what kinds of ventures or stages you’re looking for.
         type: textarea
         required: false
       - name: consent

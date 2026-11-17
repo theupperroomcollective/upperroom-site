@@ -24,6 +24,7 @@ interface Field {
   autocomplete?: string;
   options?: string[];
   half?: boolean;
+  hint?: string;
 }
 
 interface Props {
@@ -39,6 +40,9 @@ const { id, formName, fields, submitLabel, success, surface } = Astro.props;
 const endpoint = import.meta.env.PUBLIC_SHEETS_ENDPOINT ?? "";
 const fieldId = (name: string) => `${id}-${name}`;
 const errorId = (name: string) => `${id}-${name}-error`;
+const hintId = (name: string) => `${id}-${name}-hint`;
+// Error message, plus the hint when there is one, for screen readers.
+const describedBy = (field: Field) => [field.hint && hintId(field.name), errorId(field.name)].filter(Boolean).join(" ");
 
 // Split "Read our [Privacy Policy](/privacy)." into text and link parts.
 const linkParts = (text: string) =>
@@ -66,12 +70,18 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
               data-field="checkboxes"
               data-required={field.required ? "" : undefined}
               data-error={errorId(field.name)}
-              aria-describedby={errorId(field.name)}
+              aria-describedby={describedBy(field)}
             >
               <legend>
                 {field.label}
-                {!field.required && <span class="sheet-form__optional"> (optional)</span>}
+                {field.required && (
+                  <>
+                    <span class="sheet-form__required" aria-hidden="true"> *</span>
+                    <span class="visually-hidden"> (required)</span>
+                  </>
+                )}
               </legend>
+              {field.hint && <p class="sheet-form__hint" id={hintId(field.name)}>{field.hint}</p>}
               <div class="sheet-form__options">
                 {field.options?.map((option) => (
                   <label class="sheet-form__check">
@@ -104,6 +114,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
                       part.text
                     ),
                   )}
+                  {field.required && <span class="sheet-form__required" aria-hidden="true"> *</span>}
                 </span>
               </label>
               <p class="sheet-form__error" id={errorId(field.name)} />
@@ -116,8 +127,9 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
             >
               <label for={fieldId(field.name)}>
                 {field.label}
-                {!field.required && <span class="sheet-form__optional"> (optional)</span>}
+                {field.required && <span class="sheet-form__required" aria-hidden="true"> *</span>}
               </label>
+              {field.hint && <p class="sheet-form__hint" id={hintId(field.name)}>{field.hint}</p>}
               {field.type === "textarea" ? (
                 <textarea
                   id={fieldId(field.name)}
@@ -125,7 +137,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
                   rows="4"
                   required={field.required}
                   autocomplete={field.autocomplete}
-                  aria-describedby={errorId(field.name)}
+                  aria-describedby={describedBy(field)}
                 />
               ) : field.type === "select" ? (
                 <div class="sheet-form__select">
@@ -133,7 +145,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
                     id={fieldId(field.name)}
                     name={field.name}
                     required={field.required}
-                    aria-describedby={errorId(field.name)}
+                    aria-describedby={describedBy(field)}
                   >
                     <option value="">Select an option</option>
                     {field.options?.map((option) => (
@@ -150,7 +162,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
                   spellcheck={field.type === "url" || field.type === "email" ? "false" : undefined}
                   required={field.required}
                   autocomplete={field.autocomplete}
-                  aria-describedby={errorId(field.name)}
+                  aria-describedby={describedBy(field)}
                 />
               )}
               <p class="sheet-form__error" id={errorId(field.name)} />
@@ -320,8 +332,16 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
     font-size: var(--text-sm);
   }
 
-  .sheet-form__optional {
+  /* Required marker. The input's own `required` tells screen readers. */
+  .sheet-form__required {
+    opacity: 0.5;
+  }
+
+  .sheet-form__hint {
+    margin-top: calc(var(--space-2xs) * -0.5);
     color: var(--text-body);
+    font-size: var(--text-xs);
+    line-height: var(--leading-body);
   }
 
   .sheet-form input:not([type="checkbox"]),
