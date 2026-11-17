@@ -31,7 +31,7 @@ jobs:
       - run: npm run build
         env:
           SITE_URL: https://the5collective.org
-          PUBLIC_SHEETS_ENDPOINT: ${{ vars.PUBLIC_SHEETS_ENDPOINT }}
+          PUBLIC_SHEETS_ENDPOINT: ${{ vars.PUBLIC_SHEETS_ENDPOINT || 'https://script.google.com/macros/s/AKfycbzhaTe--qRC-2SLm3ye6Qk8Hs-7ILbyMA5h6ZONwdamrsF7JQdRb0H1_p80WKTStSJZ0g/exec' }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
