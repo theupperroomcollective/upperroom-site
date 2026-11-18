@@ -24,7 +24,7 @@
           "label": "1. Full name",
           "type": "text",
           "required": true,
-          "section": "Section 1 - About you",
+          "section": "About you",
           "autocomplete": "name"
         },
         {
@@ -47,7 +47,7 @@
             "4 - Very valuable",
             "5 - Extremely valuable"
           ],
-          "section": "Section 2 - Your experience"
+          "section": "Your experience"
         },
         {
           "name": "relevance",
@@ -103,7 +103,7 @@
             "I would only attend if free"
           ],
           "hint": "USD",
-          "section": "Section 3 - Future demand & opportunities"
+          "section": "Future demand and opportunities"
         },
         {
           "name": "paid_return",
@@ -184,7 +184,7 @@
             "Maybe - feel free to reach out",
             "Not right now"
           ],
-          "section": "Section 4 - Optional follow-up"
+          "section": "Optional follow-up"
         },
         {
           "name": "additional_feedback",
