@@ -79,7 +79,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
                 {field.label}
                 {field.required && (
                   <>
-                    <span class="sheet-form__required" aria-hidden="true"> *</span>
+                    <span class="sheet-form__required" aria-hidden="true"> (Required)</span>
                     <span class="visually-hidden"> (required)</span>
                   </>
                 )}
@@ -117,7 +117,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
                       part.text
                     ),
                   )}
-                  {field.required && <span class="sheet-form__required" aria-hidden="true"> *</span>}
+                  {field.required && <span class="sheet-form__required" aria-hidden="true"> (Required)</span>}
                 </span>
               </label>
               <p class="sheet-form__error" id={errorId(field.name)} />
@@ -130,7 +130,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
             >
               <label for={fieldId(field.name)}>
                 {field.label}
-                {field.required && <span class="sheet-form__required" aria-hidden="true"> *</span>}
+                {field.required && <span class="sheet-form__required" aria-hidden="true"> (Required)</span>}
               </label>
               {field.hint && <p class="sheet-form__hint" id={hintId(field.name)}>{field.hint}</p>}
               {field.type === "textarea" ? (
@@ -198,7 +198,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
     const kind = container.dataset.field;
     if (kind === "checkboxes" || kind === "radio") {
       const anyChecked = container.querySelector("input:checked");
-      return container.hasAttribute("data-required") && !anyChecked ? "Please choose at least one." : "";
+      return container.hasAttribute("data-required") && !anyChecked ? (kind === "radio" ? "Please choose one option." : "Please choose at least one.") : "";
     }
     const el = container.querySelector<Control>("input:not([type='hidden']), textarea, select");
     if (!el) return "";
@@ -232,6 +232,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
     const submit = form.querySelector<HTMLButtonElement>("button[type='submit']")!;
     const success = root.querySelector<HTMLElement>(".sheet-form__success")!;
     const containers = Array.from(form.querySelectorAll<HTMLElement>("[data-field]"));
+    const submissionId = crypto.randomUUID();
 
     // Once a field shows an error, re-check it as the person fixes it.
     containers.forEach((container) => {
@@ -265,6 +266,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
       const data = new URLSearchParams();
       new FormData(form).forEach((value, key) => data.append(key, String(value).trim()));
       data.append("page", window.location.pathname);
+      data.append("submission_id", submissionId);
 
       submit.disabled = true;
       status.textContent = "Sending…";

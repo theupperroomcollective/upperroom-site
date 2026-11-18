@@ -9,7 +9,7 @@
       "Thank you for joining us!",
       "As one of our earliest participants, you’re helping shape The Upper Room Collective, a new faith-driven accelerator ecosystem for the world’s next unicorn founders.",
       "We’d love your feedback on what worked, what you need next, and how we can make every session more valuable.",
-      "Just 3–4 minutes. Your insights help us build better."
+      "Just 3-4 minutes. Your insights help us build better."
     ],
     "form": {
       "name": "Feedback",
@@ -24,7 +24,7 @@
           "label": "1. Full name",
           "type": "text",
           "required": true,
-          "section": "Section 1 — About you",
+          "section": "Section 1 - About you",
           "autocomplete": "name"
         },
         {
@@ -41,13 +41,13 @@
           "type": "radio",
           "required": true,
           "options": [
-            "1 — Not valuable",
-            "2 — Slightly valuable",
-            "3 — Moderately valuable",
-            "4 — Very valuable",
-            "5 — Extremely valuable"
+            "1 - Not valuable",
+            "2 - Slightly valuable",
+            "3 - Moderately valuable",
+            "4 - Very valuable",
+            "5 - Extremely valuable"
           ],
-          "section": "Section 2 — Your experience"
+          "section": "Section 2 - Your experience"
         },
         {
           "name": "relevance",
@@ -55,11 +55,11 @@
           "type": "radio",
           "required": true,
           "options": [
-            "1 — Not relevant",
-            "2 — Slightly relevant",
-            "3 — Moderately relevant",
-            "4 — Very relevant",
-            "5 — Extremely relevant"
+            "1 - Not relevant",
+            "2 - Slightly relevant",
+            "3 - Moderately relevant",
+            "4 - Very relevant",
+            "5 - Extremely relevant"
           ]
         },
         {
@@ -95,15 +95,15 @@
           "required": true,
           "options": [
             "Under $15",
-            "$15–$25",
-            "$26–$50",
-            "$51–$75",
-            "$76–$100",
+            "$15-$25",
+            "$26-$50",
+            "$51-$75",
+            "$76-$100",
             "Over $100",
             "I would only attend if free"
           ],
           "hint": "USD",
-          "section": "Section 3 — Future demand & opportunities"
+          "section": "Section 3 - Future demand & opportunities"
         },
         {
           "name": "paid_return",
@@ -124,11 +124,11 @@
           "type": "checkboxes",
           "required": true,
           "options": [
-            "Founder Master Classes — practical learning",
-            "Founder Design Studio — strategy and consulting",
-            "Founder Run Club — wellness and community",
-            "Founder Dinners — curated connections",
-            "Founder Podcast — stories and insights"
+            "Founder Master Classes - practical learning",
+            "Founder Design Studio - strategy and consulting",
+            "Founder Run Club - wellness and community",
+            "Founder Dinners - curated connections",
+            "Founder Podcast - stories and insights"
           ],
           "hint": "Select all that apply."
         },
@@ -181,10 +181,10 @@
           "required": false,
           "options": [
             "Yes, happy to share!",
-            "Maybe — feel free to reach out",
+            "Maybe - feel free to reach out",
             "Not right now"
           ],
-          "section": "Section 4 — Optional follow-up"
+          "section": "Section 4 - Optional follow-up"
         },
         {
           "name": "additional_feedback",
