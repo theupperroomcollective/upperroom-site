@@ -1,0 +1,199 @@
+{
+  "feedback": {
+    "seo": {
+      "title": "Founder Master Class | Experience & Feedback",
+      "description": "Help shape The Upper Room Collective. Share your master class experience, biggest takeaways, and what you need next."
+    },
+    "heading": "Founder Master Class | Experience & Feedback",
+    "intro": [
+      "Thank you for joining us!",
+      "As one of our earliest participants, you’re helping shape The Upper Room Collective, a new faith-driven accelerator ecosystem for the world’s next unicorn founders.",
+      "We’d love your feedback on what worked, what you need next, and how we can make every session more valuable.",
+      "Just 3-4 minutes. Your insights help us build better."
+    ],
+    "form": {
+      "name": "Feedback",
+      "submitLabel": "Send feedback",
+      "success": {
+        "heading": "Thank you for helping us build what doesn’t exist yet!",
+        "body": "Your feedback is helping shape the next chapter of The Upper Room Collective.\n\nWe’re grateful to have you among our earliest founders and can’t wait to see what you build."
+      },
+      "fields": [
+        {
+          "name": "name",
+          "label": "1. Full name",
+          "type": "text",
+          "required": true,
+          "section": "Section 1 - About you",
+          "autocomplete": "name"
+        },
+        {
+          "name": "email",
+          "label": "2. Email address",
+          "type": "email",
+          "required": true,
+          "hint": "Please use the email address you registered with.",
+          "autocomplete": "email"
+        },
+        {
+          "name": "value",
+          "label": "3. How valuable was this master class to you?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            "1 - Not valuable",
+            "2 - Slightly valuable",
+            "3 - Moderately valuable",
+            "4 - Very valuable",
+            "5 - Extremely valuable"
+          ],
+          "section": "Section 2 - Your experience"
+        },
+        {
+          "name": "relevance",
+          "label": "4. How relevant was this topic to your current founder journey?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            "1 - Not relevant",
+            "2 - Slightly relevant",
+            "3 - Moderately relevant",
+            "4 - Very relevant",
+            "5 - Extremely relevant"
+          ]
+        },
+        {
+          "name": "takeaway",
+          "label": "5. What was your biggest takeaway from this master class?",
+          "type": "textarea",
+          "required": true,
+          "hint": "One insight, mindset shift or practical action you’re taking away."
+        },
+        {
+          "name": "preparedness",
+          "label": "6. How prepared do you feel to take your idea or business forward after this session?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            "Much more prepared",
+            "Somewhat more prepared",
+            "About the same",
+            "Less prepared",
+            "Not applicable to my stage"
+          ]
+        },
+        {
+          "name": "improvements",
+          "label": "7. What would have made this session even more valuable?",
+          "type": "textarea",
+          "required": false
+        },
+        {
+          "name": "fair_price",
+          "label": "8. What would you consider a fair price for a future live master class of this quality?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            "Under $15",
+            "$15-$25",
+            "$26-$50",
+            "$51-$75",
+            "$76-$100",
+            "Over $100",
+            "I would only attend if free"
+          ],
+          "hint": "USD",
+          "section": "Section 3 - Future demand & opportunities"
+        },
+        {
+          "name": "paid_return",
+          "label": "9. How likely would you be to register for another paid Founder Master Class on a topic relevant to you?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            "Definitely would",
+            "Likely",
+            "Unsure",
+            "Unlikely",
+            "Definitely would not"
+          ]
+        },
+        {
+          "name": "experiences",
+          "label": "10. Which Upper Room Collective experiences would you be most interested in?",
+          "type": "checkboxes",
+          "required": true,
+          "options": [
+            "Founder Master Classes - practical learning",
+            "Founder Design Studio - strategy and consulting",
+            "Founder Run Club - wellness and community",
+            "Founder Dinners - curated connections",
+            "Founder Podcast - stories and insights"
+          ],
+          "hint": "Select all that apply."
+        },
+        {
+          "name": "priority",
+          "label": "11. What is your biggest priority or challenge as a founder right now?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            "Validating my business idea",
+            "Building my product or service",
+            "Finding customers and growing revenue",
+            "Brand positioning and go-to-market",
+            "Funding and investor readiness",
+            "Building the right team and partnerships",
+            "Scaling systems and operations",
+            "Other"
+          ]
+        },
+        {
+          "name": "future_topic",
+          "label": "12. Which topic would you most like us to cover in a future master class?",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "recommendation",
+          "label": "13. How likely are you to recommend this master class to another founder?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "hint": "0 = Not at all likely · 10 = Extremely likely"
+        },
+        {
+          "name": "follow_up",
+          "label": "14. Would you be open to sharing a short testimonial or speaking with our team about your experience?",
+          "type": "radio",
+          "required": false,
+          "options": [
+            "Yes, happy to share!",
+            "Maybe - feel free to reach out",
+            "Not right now"
+          ],
+          "section": "Section 4 - Optional follow-up"
+        },
+        {
+          "name": "additional_feedback",
+          "label": "15. Is there anything else you’d like us to know, or an opportunity we could help you unlock?",
+          "type": "textarea",
+          "required": false,
+          "hint": "Ideas, unmet needs, introductions, collaboration opportunities or other feedback."
+        }
+      ]
+    }
+  }
+}
