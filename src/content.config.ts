@@ -121,14 +121,15 @@ const formField = z
   .object({
     name: z.string().regex(/^[a-z][a-z0-9_]*$/, "Use lowercase letters, numbers and underscores, e.g. first_name"),
     label: z.string().min(1).describe("For consent fields, may include one [link text](/url)"),
-    type: z.enum(["text", "email", "tel", "url", "textarea", "select", "checkboxes", "consent"]),
+    type: z.enum(["text", "email", "tel", "url", "textarea", "select", "checkboxes", "radio", "consent"]),
     required: z.boolean().default(false),
     autocomplete: z.string().optional(),
     options: z.array(z.string().min(1)).optional().describe("Required for select and checkboxes"),
+    section: z.string().optional(),
     hint: z.string().optional().describe("Short help text shown under the label"),
     half: z.boolean().default(false).describe("Sit side by side with the next half-width field on wider screens"),
   })
-  .refine((f) => !["select", "checkboxes"].includes(f.type) || (f.options && f.options.length > 0), {
+  .refine((f) => !["select", "checkboxes", "radio"].includes(f.type) || (f.options && f.options.length > 0), {
     message: "Select and checkbox fields need at least one option",
   });
 
@@ -147,4 +148,19 @@ const interest = defineCollection({
   }),
 });
 
-export const collections = { pillars, site, home, legal, interest };
+const feedback = defineCollection({
+  loader: file("src/content/feedback.yaml"),
+  schema: z.object({
+    seo: z.object({ title: z.string().max(70), description: z.string().max(160) }),
+    heading: z.string(),
+    intro: z.array(z.string()),
+    form: z.object({
+      name: z.string(),
+      submitLabel: z.string(),
+      success: z.object({ heading: z.string(), body: z.string() }),
+      fields: z.array(formField).length(15),
+    }),
+  }),
+});
+
+export const collections = { pillars, site, home, legal, interest, feedback };

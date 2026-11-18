@@ -19,12 +19,13 @@
 interface Field {
   name: string;
   label: string;
-  type: "text" | "email" | "tel" | "url" | "textarea" | "select" | "checkboxes" | "consent";
+  type: "text" | "email" | "tel" | "url" | "textarea" | "select" | "checkboxes" | "radio" | "consent";
   required: boolean;
   autocomplete?: string;
   options?: string[];
   half?: boolean;
   hint?: string;
+  section?: string;
 }
 
 interface Props {
@@ -63,11 +64,13 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
 
     <div class="sheet-form__grid">
       {
-        fields.map((field) =>
-          field.type === "checkboxes" ? (
+        fields.map((field) => (
+          <>
+          {field.section && <h2 class="sheet-form__section">{field.section}</h2>}
+          {field.type === "checkboxes" || field.type === "radio" ? (
             <fieldset
               class:list={["sheet-form__field", "sheet-form__group", { "sheet-form__field--half": field.half }]}
-              data-field="checkboxes"
+              data-field={field.type}
               data-required={field.required ? "" : undefined}
               data-error={errorId(field.name)}
               aria-describedby={describedBy(field)}
@@ -82,10 +85,10 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
                 )}
               </legend>
               {field.hint && <p class="sheet-form__hint" id={hintId(field.name)}>{field.hint}</p>}
-              <div class="sheet-form__options">
+              <div class:list={["sheet-form__options", { "sheet-form__options--scale": field.name === "recommendation" }]}>
                 {field.options?.map((option) => (
                   <label class="sheet-form__check">
-                    <input type="checkbox" name={field.name} value={option} />
+                    <input type={field.type === "radio" ? "radio" : "checkbox"} name={field.name} value={option} />
                     <span>{option}</span>
                   </label>
                 ))}
@@ -167,8 +170,9 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
               )}
               <p class="sheet-form__error" id={errorId(field.name)} />
             </div>
-          ),
-        )
+          )}
+          </>
+        ))
       }
     </div>
 
@@ -192,7 +196,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
   /** Returns an error message for one field container, or "" if it's fine. */
   const validate = (container: HTMLElement): string => {
     const kind = container.dataset.field;
-    if (kind === "checkboxes") {
+    if (kind === "checkboxes" || kind === "radio") {
       const anyChecked = container.querySelector("input:checked");
       return container.hasAttribute("data-required") && !anyChecked ? "Please choose at least one." : "";
     }
@@ -344,7 +348,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
     line-height: var(--leading-body);
   }
 
-  .sheet-form input:not([type="checkbox"]),
+  .sheet-form input:not([type="checkbox"], [type="radio"]),
   .sheet-form textarea,
   .sheet-form select {
     width: 100%;
@@ -360,7 +364,7 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
   }
 
   /* Focus: the field's own border lights up (plus a hairline outline, so it reads as 2px without shifting). */
-  .sheet-form input:not([type="checkbox"]):focus-visible,
+  .sheet-form input:not([type="checkbox"], [type="radio"]):focus-visible,
   .sheet-form textarea:focus-visible,
   .sheet-form select:focus-visible {
     border-color: var(--field-focus);
@@ -411,6 +415,41 @@ const plainText = (text: string) => linkParts(text).map((p) => p.text).join("");
   }
 
   /* Checkbox groups and the consent box */
+  .sheet-form__options--scale {
+    grid-template-columns: repeat(auto-fit, minmax(2.75rem, 1fr));
+    gap: var(--space-2xs);
+    padding-left: 0;
+  }
+
+  .sheet-form__options--scale label.sheet-form__check {
+    display: grid;
+    justify-items: center;
+    min-height: 2.75rem;
+    padding: var(--space-2xs);
+    border: var(--border-width) solid var(--field-border);
+    border-radius: var(--radius-sm);
+  }
+
+  .sheet-form__options--scale label:has(input:checked) {
+    border-color: var(--text-heading);
+    background-color: var(--field-surface);
+  }
+
+  .sheet-form__success p {
+    white-space: pre-line;
+  }
+
+  .sheet-form__section {
+    grid-column: 1 / -1;
+    padding-top: var(--space-lg);
+    border-top: var(--border-width) solid var(--border);
+    font-size: var(--text-xl);
+  }
+
+  .sheet-form__check input[type="radio"] {
+    border-radius: 50%;
+  }
+
   .sheet-form__group {
     min-width: 0;
     margin: 0;

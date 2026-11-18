@@ -1,83 +1,60 @@
-/**
- * The Upper Room Collective — website form → Google Sheet.
- *
- * Paste this into the Apps Script editor of the spreadsheet that should collect
- * submissions (Extensions → Apps Script), then deploy it as a web app.
- * Full steps: integrations/google-sheets/README.md in the website repo.
- *
- * Each form writes to a tab named after its hidden "form" field (e.g. "Interest").
- * The tab and its header row are created automatically; new fields added on the
- * website become new columns. Columns you add by hand are left alone.
- * Fields with several values (checkbox groups) are saved comma-separated in one cell.
- */
-
-const HONEYPOT = "company"; // hidden field real people never fill in
-const SKIP = ["form", HONEYPOT]; // fields not written as columns
-const MAX_LENGTH = 5000; // per value, to keep junk out of the sheet
-
+/** Website forms: keep Interest and Feedback responses in separate sheet tabs. */
+const BOOK_ID = '1OR81vizK-uNMihNPKq9UBhEAQwYqG8cY-MEDK4giTNs';
+const NOTIFICATION_EMAIL = 'tanya@the5collective.org';
+const FORMS = {
+  Interest: ['name', 'business', 'email', 'phone', 'website', 'linkedin', 'interests', 'building', 'consent', 'page', 'job_title', 'journey'],
+  Feedback: ['name', 'email', 'value', 'relevance', 'takeaway', 'preparedness', 'improvements', 'fair_price', 'paid_return', 'experiences', 'priority', 'future_topic', 'recommendation', 'follow_up', 'additional_feedback', 'page']
+};
+const REQUIRED_FEEDBACK = ['name', 'email', 'value', 'relevance', 'takeaway', 'preparedness', 'fair_price', 'paid_return', 'experiences', 'priority', 'recommendation'];
+function doGet() { return json({ok: true}); }
 function doPost(e) {
-  // e.parameters keeps every value of repeated fields (checkboxes); join them.
-  const raw = (e && e.parameters) || {};
-  const params = {};
-  Object.keys(raw).forEach((key) => {
-    params[key] = [].concat(raw[key]).join(", ");
-  });
-
-  // Spam: pretend it worked so bots don't retry.
-  if (params[HONEYPOT]) return json({ ok: true });
-
+  const p = (e && e.parameters) || {};
+  const value = key => (p[key] || []).join(', ').trim();
+  if (value('company')) return json({ok: true});
+  const formName = value('form') || 'Interest';
+  const fields = FORMS[formName];
+  if (!fields) return json({ok: false, error: 'Unknown form.'});
+  const required = formName === 'Feedback' ? REQUIRED_FEEDBACK : ['name', 'email', 'consent'];
+  if (required.some(key => !value(key)) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value('email'))) {
+    return json({ok: false, error: 'Please complete the required fields.'});
+  }
+  if (formName === 'Feedback' && !/^(10|[0-9])$/.test(value('recommendation'))) {
+    return json({ok: false, error: 'Please choose a recommendation score from 0 to 10.'});
+  }
   const lock = LockService.getScriptLock();
+  let acquired = false;
   try {
     lock.waitLock(10000);
-    const sheet = sheetFor(params.form || "Submissions");
-    const headers = ensureHeaders(sheet, params);
-
-    const row = headers.map((header) => {
-      if (header === "Submitted at") return new Date();
-      const value = params[header];
-      return value === undefined ? "" : clean(value);
-    });
-    sheet.appendRow(row);
-    return json({ ok: true });
-  } catch (err) {
-    console.error(err);
-    return json({ ok: false, error: "Could not save the submission." });
+    acquired = true;
+    const book = SpreadsheetApp.openById(BOOK_ID);
+    const sheet = book.getSheetByName(formName) || book.insertSheet(formName);
+    const count = sheet.getLastColumn();
+    const headers = count ? sheet.getRange(1, 1, 1, count).getValues()[0].map(String) : ['Submitted at'];
+    fields.forEach(key => { if (!headers.includes(key)) headers.push(key); });
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
+    sheet.setFrozenRows(1);
+    sheet.appendRow(headers.map(key => key === 'Submitted at' ? new Date() : clean(value(key))));
+    SpreadsheetApp.flush();
+  } catch (error) {
+    console.error(error);
+    return json({ok: false, error: 'Could not save the submission.'});
   } finally {
-    lock.releaseLock();
+    if (acquired) lock.releaseLock();
   }
+  try {
+    MailApp.sendEmail({
+      to: NOTIFICATION_EMAIL,
+      subject: formName === 'Feedback' ? 'New master class feedback — The Upper Room Collective' : 'New website interest submission — The Upper Room Collective',
+      body: 'A new ' + formName.toLowerCase() + ' response has been saved to your spreadsheet.\n\n' + fields.map(key => key + ': ' + value(key).slice(0, 5000)).join('\n\n') + '\n\nView responses: https://docs.google.com/spreadsheets/d/' + BOOK_ID + '/edit',
+      name: 'The Upper Room Collective'
+    });
+  } catch (mailError) { console.error('Response saved, but email notification failed: ' + mailError); }
+  return json({ok: true});
 }
-
-// Visiting the web app URL in a browser just confirms it's running.
-function doGet() {
-  return json({ ok: true, message: "Form endpoint is running." });
-}
-
-function sheetFor(name) {
-  const book = SpreadsheetApp.getActiveSpreadsheet();
-  const safeName = String(name).slice(0, 90);
-  return book.getSheetByName(safeName) || book.insertSheet(safeName);
-}
-
-function ensureHeaders(sheet, params) {
-  const lastColumn = sheet.getLastColumn();
-  const headers = lastColumn ? sheet.getRange(1, 1, 1, lastColumn).getValues()[0].map(String) : [];
-  if (!headers.includes("Submitted at")) headers.unshift("Submitted at");
-
-  Object.keys(params).forEach((key) => {
-    if (!SKIP.includes(key) && !headers.includes(key)) headers.push(key);
-  });
-
-  sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight("bold");
-  sheet.setFrozenRows(1);
-  return headers;
-}
-
-// Stops values like "=IMPORTXML(...)" from running as formulas in the sheet.
 function clean(value) {
-  const text = String(value).slice(0, MAX_LENGTH);
+  const text = String(value).slice(0, 5000);
   return /^[=+\-@]/.test(text) ? "'" + text : text;
 }
-
-function json(body) {
-  return ContentService.createTextOutput(JSON.stringify(body)).setMimeType(ContentService.MimeType.JSON);
+function json(value) {
+  return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON);
 }
